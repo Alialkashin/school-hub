@@ -1,7 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using school_hub.Data;
+using school_hub.Models.Users;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
 
 var app = builder.Build();
 
