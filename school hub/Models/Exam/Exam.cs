@@ -8,7 +8,7 @@ namespace school_hub.Models.Exam
         public short ExamId { get; set; }
         public short LessonId { get; set; }
         public byte PassingScore { get; set; }
-        public TimeOnly ExamTime { get; set; }
+        public byte ExamTime { get; set; }//minutes
 
         //public byte CountOfQuestion { get; set; }
         public Lesson.Lesson Lesson { get; set; }

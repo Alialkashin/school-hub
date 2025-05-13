@@ -10,7 +10,7 @@ namespace school_hub.Models.Exam
         public short ExamId { get; set; }
         //public bool IsPassed { get; set; }
         public DateOnly ExamDate { get; set; }
-        public TimeOnly TimeToComlete { get; set; }
+        public byte TimeToComlete { get; set; }
         //public byte CountCorrentAnswer { get; set; }
         public ICollection<StudentAnswer> StudentAnswers { get; set; }
         public Student Student { get; set; }

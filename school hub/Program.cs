@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using school_hub.Data;
 using school_hub.Models.Users;
@@ -8,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
+builder.Services.AddIdentity<User,IdentityRole<int>>()
+.AddDefaultTokenProviders()
+.AddEntityFrameworkStores<AppDBContext>();
 
 var app = builder.Build();
 
@@ -31,3 +35,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+//لتعديل واجهة واحدة
+//dotnet aspnet-codegenerator identity -dc ApplicationDbContext --files "Account/Login"
+

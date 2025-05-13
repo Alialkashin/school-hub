@@ -10,6 +10,7 @@ namespace school_hub.Models.Lesson
         public short LessonId { get; set; }
         public string VideoPath { get; set; }
         public short Duration { get; set; }
+        public int? PreviousVideo { get; set; }
         public Lesson Lesson { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<StudentView> Views { get; set; }

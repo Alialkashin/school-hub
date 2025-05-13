@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using school_hub.Models.Sections;
 using school_hub.Models.Users;
-
+using school_hub.Models;
 namespace school_hub.Models
 {
     public class StudentStudyPlan

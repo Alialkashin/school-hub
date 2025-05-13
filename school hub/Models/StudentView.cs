@@ -8,6 +8,7 @@ namespace school_hub.Models
     {
         public int StudentId { get; set; }
         public int VideoId { get; set; }
+        public bool IsComplete { get; set; }    
         public Student Student { get; set; }
         public Video Video { get; set; }
     }

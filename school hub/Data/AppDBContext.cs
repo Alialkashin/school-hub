@@ -1,15 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Buffers;
+using System.Reflection.Emit;
+using System.Security.Cryptography.X509Certificates;
+using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Abstractions;
 using school_hub.Models;
 using school_hub.Models.Exam;
 using school_hub.Models.Lesson;
 using school_hub.Models.Sections;
 using school_hub.Models.Users;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace school_hub.Data
 {
 
-	public class AppDBContext : DbContext
+	public class AppDBContext : IdentityDbContext<User,IdentityRole<int>,int>
 	{
 		public AppDBContext(DbContextOptions options) : base(options)
 		{
@@ -17,12 +23,11 @@ namespace school_hub.Data
 		}
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
+			base.OnModelCreating(modelBuilder);
 			#region composit keys
-			modelBuilder.Entity<LessonAvailableInSchedule>().HasKey(e => new { e.LessonId , e.ScheduleId });//set composit primary key to LessonAvailableInSchedule
-			modelBuilder.Entity<StudentRating>().HasKey(e => new { e.StudentId, e.LessonId });//set composit primary key to StudentRating
-			modelBuilder.Entity<StudentStudyPlan>().HasKey(e => new {e.StudentId,e.PlanId});//set composit primary key to StudentSubscription
-			modelBuilder.Entity<StudentView>().HasKey(e => new { e.StudentId, e.VideoId });//set composit primary key to StudentViews
-			modelBuilder.Entity<StudyScheduleDetail>().HasKey(e => new { e.SubjectId, e.ScheduleId });//set composit primary key to StudyScheduleDetails
+			modelBuilder.Entity<StudentRating>().HasKey(e => new { e.StudentId, e.LessonId });   //set composit primary key to StudentRating
+			modelBuilder.Entity<StudentStudyPlan>().HasKey(e => new {e.StudentId,e.PlanId});     //set composit primary key to StudentSubscription
+			modelBuilder.Entity<StudentView>().HasKey(e => new { e.StudentId, e.VideoId });       //set composit primary key to StudentViews
 			modelBuilder.Entity<StudentAnswer>().HasKey(e => new {e.StudentExamId, e.AnswerId});
 			#endregion
 
@@ -36,10 +41,9 @@ namespace school_hub.Data
 			modelBuilder.Entity<Reply>().HasKey(e => e.ReplyId);
 			modelBuilder.Entity<Video>().HasKey(e => e.VideoId);
 			modelBuilder.Entity<Section>().HasKey(e => e.SectionId);
-			modelBuilder.Entity<User>().HasKey(e => e.UserId);
 			modelBuilder.Entity<Book>().HasKey(e => e.BookId);
-			modelBuilder.Entity<StudySchedule>().HasKey(e => e.ScheduleId);
-
+			modelBuilder.Entity<StudyPlan>().HasKey(sp => sp.StudyPlanId);
+			modelBuilder.Entity<Subject>().HasKey(s => s.SubjectId);
 			#endregion
 
 			#region default values
@@ -57,52 +61,68 @@ namespace school_hub.Data
 			modelBuilder.Entity<Question>()
 				.HasMany(q => q.Answers)
 				.WithOne(a => a.Question)
-				.HasForeignKey(q => q.QuestionId );
+				.HasForeignKey(q => q.QuestionId )
+				.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<Exam>()
 				.HasMany(e => e.Questions)
 				.WithOne(q => q.Exam)
-				.HasForeignKey(q => q.ExamId);
+				.HasForeignKey(q => q.ExamId)
+				.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<Exam>()
 				.HasOne(e => e.Lesson)
 				.WithOne(l => l.Exam)
-				.HasForeignKey<Exam>(e => e.LessonId);
+				.HasForeignKey<Exam>(e => e.LessonId)
+				.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<LibrarySection>()
 			.HasMany(ls => ls.Books)
 			.WithOne(b => b.LibrarySection)
-			.HasForeignKey(b => b.LibrarySectionId);
+			.HasForeignKey(b => b.LibrarySectionId)
+			.OnDelete(DeleteBehavior.NoAction);
 
-			modelBuilder.Entity<Unit>()
-			.HasMany(u => u.Lessons)
-			.WithOne(l => l.Unit)
-			.HasForeignKey(l => l.UnitId);
+			modelBuilder.Entity<StudySection>()
+			.HasMany(ss => ss.StudyPlans)
+			.WithOne(sp => sp.StudySection)
+			.HasForeignKey(sp => sp.StudySectionId)
+			.OnDelete(DeleteBehavior.NoAction);
+
+			modelBuilder.Entity<StudyPlan>()
+			.HasMany(sp => sp.Subjects)
+			.WithOne(s => s.StudyPlan)
+			.HasForeignKey(s => s.StudyPlanId)
+			.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<Subject>()
 			.HasOne(s => s.Teacher)
 			.WithMany(t => t.Subjects)
-			.HasForeignKey(s => s.TeacherId);
+			.HasForeignKey(s => s.TeacherId)
+			.OnDelete(DeleteBehavior.NoAction);
 
-			modelBuilder.Entity<Section>()
-				.HasMany(s => s.Sections)
-				.WithOne(s => s.Parent)
-				.HasForeignKey(s => s.ParentId);
+			modelBuilder.Entity<Unit>()
+			.HasMany(u => u.Lessons)
+			.WithOne(l => l.Unit)
+			.HasForeignKey(l => l.UnitId)
+			.OnDelete(DeleteBehavior.NoAction);
 
-			modelBuilder.Entity<StudySchedule>()
-			.HasOne(s => s.StudyPlan)
-			.WithOne(sp => sp.StudySchedule)
-			.HasForeignKey<StudySchedule>(s => s.PlanId);
-
+			modelBuilder.Entity<Unit>()
+			.HasOne(u => u.Subject)
+			.WithMany(s => s.Units)
+			.HasForeignKey(u => u.SubjectId)
+			.OnDelete(DeleteBehavior.NoAction);
+			
 			modelBuilder.Entity<Lesson>()
 			.HasMany(l => l.Videos)
 			.WithOne(v => v.Lesson)
-			.HasForeignKey(v => v.LessonId);
+			.HasForeignKey(v => v.LessonId)
+			.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<Video>()
 			.HasMany(v => v.Comments)
 			.WithOne(c => c.Video)
-			.HasForeignKey( c => c.VideoId);
+			.HasForeignKey( c => c.VideoId)
+			.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<Comment>()
 			.HasMany(c => c.Replys)
@@ -111,15 +131,27 @@ namespace school_hub.Data
 			.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<Comment>()
-			.HasOne(c => c.User)
-			.WithMany(u => u.Comments)
-			.HasForeignKey(c => c.UserId)
+			.HasOne(c => c.Teacher)
+			.WithMany(t => t.Comments)
+			.HasForeignKey(c => c.TeacherId)
+			.OnDelete(DeleteBehavior.NoAction);
+
+			modelBuilder.Entity<Comment>()
+			.HasOne(c => c.Student)
+			.WithMany(s => s.Comments)
+			.HasForeignKey(c => c.StudentId)
 			.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<Reply>()
-			.HasOne(r => r.User)
-			.WithMany(u => u.Replys)
-			.HasForeignKey(r => r.UserId)
+			.HasOne(r => r.Student)
+			.WithMany(s => s.Replies)
+			.HasForeignKey(r => r.StudentId)
+			.OnDelete(DeleteBehavior.NoAction);
+
+			modelBuilder.Entity<Reply>()
+			.HasOne(r => r.Teacher)
+			.WithMany(t => t.Replies)
+			.HasForeignKey(r => r.TeacherId)
 			.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<StudentAnswer>()
@@ -158,42 +190,16 @@ namespace school_hub.Data
 			.HasForeignKey(sr => sr.LessonId)
 			.OnDelete(DeleteBehavior.NoAction);
 
-			modelBuilder.Entity<LessonAvailableInSchedule>()
-			.HasOne(la => la.Lesson)
-			.WithMany(l => l.LessonAvailableInSchedules)
-			.HasForeignKey(la => la.LessonId)
-			.OnDelete(DeleteBehavior.NoAction);
-
-			modelBuilder.Entity<LessonAvailableInSchedule>()
-			.HasOne(la => la.Schedule)
-			.WithMany(s => s.LessonAvailableInSchedules)
-			.HasForeignKey(la => la.ScheduleId)
-			.OnDelete(DeleteBehavior.NoAction);
-			
-			modelBuilder.Entity<StudyScheduleDetail>()
-			.HasOne(ssd => ssd.Subject)
-			.WithMany(s => s.ScheduleDetails)
-			.HasForeignKey(ssd => ssd.SubjectId)
-			.OnDelete(DeleteBehavior.NoAction);
-
-			modelBuilder.Entity<StudyScheduleDetail>()
-			.HasOne(ssd => ssd.Schedule)
-			.WithMany(s => s.StudyScheduleDetails)
-			.HasForeignKey(ssd => ssd.ScheduleId)
-			.OnDelete(DeleteBehavior.NoAction);
-
 			modelBuilder.Entity<StudentStudyPlan>()
 			.HasOne(ssp => ssp.StudyPlan)
 			.WithMany(sp => sp.StudyPlanStudents)
 			.HasForeignKey ( ssp => ssp.PlanId)
-			.OnDelete(DeleteBehavior.NoAction)
 			.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<StudentStudyPlan>()
 			.HasOne(ssp => ssp.Student)
 			.WithMany(s => s.StudentStudyPlans)
 			.HasForeignKey(ssp => ssp.StudentId)
-			.OnDelete(DeleteBehavior.NoAction)
 			.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<StudentExam>()
@@ -212,9 +218,6 @@ namespace school_hub.Data
 
 			#region TPH
 			modelBuilder.Entity<Section>().HasDiscriminator(p => p.SectionType)//TPH
-				.HasValue<Unit>(enSectionType.Unit)
-				.HasValue<Subject>(enSectionType.Subject)
-				.HasValue<StudyPlan>(enSectionType.StudyPlan)
 				.HasValue<StudySection>(enSectionType.StudySection)
 				.HasValue<LibrarySection>(enSectionType.LibrarySection);
 
@@ -225,8 +228,10 @@ namespace school_hub.Data
 			#endregion
 		}
 		#region Tables
-		public DbSet<User> Users { get; set; }
 		public DbSet<Section> Sections { get; set; }
+		public DbSet<Unit> Units { get; set; }
+		public DbSet<Subject> Subjects { get; set; }
+		public DbSet<StudyPlan> StudyPlans { get; set; }
 		public DbSet<Lesson> Lessons { get; set; }
 		public DbSet<Video> Videos { get; set; }
 		public DbSet<Comment> Comments { get; set; }
@@ -237,9 +242,6 @@ namespace school_hub.Data
 		public DbSet<Answer> Answers { get; set; }
 		public DbSet<StudentExam> StudentExams { get; set; }
 		public DbSet<StudentView> StudentViews  { get; set; }
-		public DbSet<StudySchedule> StudySchedules { get; set; }
-		public DbSet<StudyScheduleDetail> StudyScheduleDetails { get; set; }
-		public DbSet<LessonAvailableInSchedule> LessonAvailableInSchedules { get; set; }
 		public DbSet<StudentAnswer> StudentAnswers { get; set; }
 		public DbSet<StudentRating> StudentRatings { get; set; }
 		public DbSet<StudentStudyPlan> StudentSubscriptions { get; set; }
