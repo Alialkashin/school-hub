@@ -20,4 +20,4 @@ namespace school_hub.Areas.Public.Controllers
             return View();
         }
     }
-}f
+}
