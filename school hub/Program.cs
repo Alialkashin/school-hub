@@ -13,6 +13,8 @@ builder.Services.AddIdentity<User,IdentityRole<int>>()
 .AddDefaultTokenProviders()
 .AddEntityFrameworkStores<AppDBContext>();
 
+builder.Logging.AddConsole();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,7 +34,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area=Public}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
 //لتعديل واجهة واحدة
