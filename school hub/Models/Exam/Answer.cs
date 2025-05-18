@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace school_hub.Models.Exam
+namespace school_hub.Models
 {
     public class Answer
     {

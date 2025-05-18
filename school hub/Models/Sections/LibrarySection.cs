@@ -1,4 +1,4 @@
-﻿namespace school_hub.Models.Sections
+﻿namespace school_hub.Models
 {
     public class LibrarySection : Section
     {

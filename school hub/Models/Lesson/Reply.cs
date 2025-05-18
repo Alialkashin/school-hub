@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using school_hub.Models.Users;
+using school_hub.Models;
 
-namespace school_hub.Models.Lesson
+namespace school_hub.Models
 {
     public class Reply
     {

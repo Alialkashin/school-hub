@@ -1,7 +1,6 @@
-﻿using school_hub.Models.Exam;
-using school_hub.Models.Lesson;
+﻿using school_hub.Models;
 
-namespace school_hub.Models.Users
+namespace school_hub.Models
 {
     public class Student : User
     {

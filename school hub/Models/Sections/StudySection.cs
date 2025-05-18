@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-namespace school_hub.Models.Sections
+namespace school_hub.Models
 {
     public class StudySection : Section
     {

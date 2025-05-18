@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 using school_hub.Models.Lesson;
 
-namespace school_hub.Models.Users
+namespace school_hub.Models
 {
     public abstract class User : IdentityUser<int>
     {

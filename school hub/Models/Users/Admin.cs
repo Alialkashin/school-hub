@@ -1,4 +1,4 @@
-﻿namespace school_hub.Models.Users
+﻿namespace school_hub.Models
 {
     public class Admin : User
     {

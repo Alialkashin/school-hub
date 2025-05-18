@@ -8,7 +8,6 @@ namespace school_hub.Models
     {
         public short PlanId { get; set; }
         public StudyPlan StudyPlan { get; set; }
-
         public int StudentId { get; set; }
         public Student Student { get; set; }
         public enPaymentStatus PaymentStatus { get; set; }
