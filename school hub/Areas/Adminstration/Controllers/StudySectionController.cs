@@ -14,7 +14,7 @@ namespace school_hub.Areas.Adminstration.Controllers
             _logger = logger;
             _context = context;
         }
-        public IActionResult Index()
+        public IActionResult Index(int id)
         {
             return View();
         }
