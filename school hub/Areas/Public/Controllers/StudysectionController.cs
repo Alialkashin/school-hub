@@ -37,8 +37,7 @@ namespace school_hub.Areas.Public.Controllers
             {
                 return NotFound();
             }
-            var stadyplans =studySection.StudyPlans.ToList();
-            return View(stadyplans);
+            return View(studySection);
         }
     }
 }
