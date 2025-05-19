@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using school_hub.Areas.Adminstration.ViewModels;
 using school_hub.Data;
 using school_hub.Models;
@@ -14,30 +15,52 @@ namespace school_hub.Areas.Adminstration.Controllers
             _logger = logger;
             _context = context;
         }
-        public IActionResult Index(int id)
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
         {
+            if (id <= 0)
+                return View();
+            
+            
+
+        }
+        public IActionResult Index()
+        {
+
+            var StudySection = _context.Sections.Where(c => c.SectionType == enSectionType.StudySection).ToList();
             return View();
         }
 
         [HttpGet]
-        public IActionResult Insert()
+        public IActionResult Edit(int? id)
         {
-            return View();
+            if (id == null || id == 0) {
+                return View();
+            }
+            var studySection = _context.Sections.Find(id);
+            return View(studySection);
         }
         [HttpPost]
-        public async Task<IActionResult> Insert(InputStudySectionViewModel vmStudySection)
+        public async Task<IActionResult> Edit(StudySection section)
         {
-            if(string.IsNullOrWhiteSpace(vmStudySection.Name) || string.IsNullOrWhiteSpace(vmStudySection.Description))
+            if(string.IsNullOrWhiteSpace(section.Name) || string.IsNullOrWhiteSpace(section.Description))
             {
-                return View(vmStudySection);
+                return View(section);
             }
             var studySection = new StudySection(){
-                Name = vmStudySection.Name,
-                Description = vmStudySection.Description,
+                Name = section.Name,
+                Description = section.Description,
                 SectionType = enSectionType.StudySection,
 
             };
-            var result = await _context.Sections.AddAsync(studySection);
+            if ( studySection.SectionId == 0)
+                await _context.Sections.AddAsync(studySection);
+            else
+                _context.Sections.Update(studySection);
+
+            await _context.SaveChangesAsync();
+
             return RedirectToAction("Index");
 
 
