@@ -13,15 +13,31 @@ namespace school_hub.Areas.Public.Controllers
             _context = context;
 
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var sections = _context.Sections.Where(s => s.SectionType == enSectionType.StudySection).ToList();
-            return View(sections);
+            var studysection1 = await _context.Sections
+                .oftype<StudySection>()
+                .TolistAsync();
+            return View(studysection1);
         }
-        public IActionResult Details(int id)
+
+     
+        public async  Task<IActionResult> Details(short? id)
         {
-            var section = (StudySection)_context.Sections.Find(id);
-            return View(section);
+            if(id == null)
+            {
+                return NotFound();
+            }
+            var studySection = await _context.Sections
+        .OfType<StudySection>()
+        .Include(s => s.StudyPlans)
+        .FirstOrDefaultAsync(s => s.SectionId == id);
+            if (studySection)
+            {
+                return NotFound();
+            }
+            var stadyplans =studySection .StadyPlans.ToList();
+            return View(stadyplans);
         }
     }
 }
