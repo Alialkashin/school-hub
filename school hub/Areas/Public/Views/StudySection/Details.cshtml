@@ -1,16 +1,27 @@
-﻿@model StudySection
+﻿           
+           @model StudySection
 
 @{
     ViewData["Title"] = "تفاصيل القسم";
 }
 
-<div class="container mt-5">
-    <div class="card mx-auto shadow" style="max-width: 600px;">
-        <img src="~/images/@Model.ImagePath" class="card-img-top" alt="@Model.Name" />
-        <div class="card-body text-center">
-            <h2 class="card-title">@Model.Name</h2>
-            <p class="card-text">هذا القسم يحتوي على مجموعة من الدروس التعليمية المتنوعة.</p>
-            <a href="/StudySection/Index" class="btn btn-primary">العودة إلى الأقسام</a>
+<h2 class="mb-4">@Model.Name</h2>
+
+<img src="@Model.ImagePath" class="img-fluid rounded mb-4" alt="صورة القسم" style="max-height: 300px;" />
+
+<h4>الخطط الدراسية:</h4>
+
+<div class="row">
+    @foreach (var plan in Model.StudyPlans)
+    {
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@plan.Name</h5>
+                    <p class="card-text">@plan.Description</p>
+                    <a asp-action="Details" asp-controller="StudyPlan" asp-route-id="@plan.StudySectionId" class="btn btn-primary">عرض التفاصيل</a>
+                </div>
+            </div>
         </div>
-    </div>
+    }
 </div>
