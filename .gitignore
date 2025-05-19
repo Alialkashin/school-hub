@@ -57,6 +57,11 @@ TestResults/
 # ملفات Rider (إذا استُخدمت)
 .idea/
 
+# ملف اعدادات المشروع
+appsettings.json
+appsettings.*.json
+
+
 # ملفات VS Code (إذا استُخدمت)
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -65,5 +70,3 @@ TestResults/
 ### استثناءات مهمة (لا تتجاهلها) ###
 !*.csproj    # تأكد من تتبع ملفات المشروع
 !*.sln       # تأكد من تتبع ملف الحل
-!appsettings.json
-!appsettings.*.json
