@@ -10,9 +10,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
 
-builder.Services.AddIdentity<User,IdentityRole<int>>()
+builder.Services.AddIdentity<User, IdentityRole<int>>()
 .AddDefaultTokenProviders()
 .AddEntityFrameworkStores<AppDBContext>();
+
 builder.Services.AddRazorPages();
 builder.Logging.AddConsole();
 
@@ -34,12 +35,13 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-        name: "default",
-    pattern: "{controller=Home}/{action=/Index}/{id?}"
-    );
-app.MapControllerRoute(
     name: "areas",
-    pattern: "{area:exists}/{controller=Home}/{action=/Index}/{id?}");
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 app.Run();
 //لتعديل واجهة واحدة

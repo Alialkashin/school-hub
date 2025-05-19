@@ -5,7 +5,6 @@ using school_hub.Models;
 
 namespace school_hub.Areas.Public.Controllers
 {
-    [Area("Public")]
     public class StudySectionController : Controller
     {
         private readonly AppDBContext _context;
