@@ -1,0 +1,23 @@
+﻿@model List<StudySection>
+
+@{
+    ViewData["Title"] = "الأقسام الدراسية";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        @foreach (var section in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0" style="transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                    <a asp-action="Details" asp-controller="StudySection" asp-route-id="section.Id">
+                        <img src="~/images/section.ImageUrl" class="card-img-top" alt="section.Name" />
+                    </a>
+                    <div class="card-body text-center">
+                        <h5 class="card-title">section.Name</h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

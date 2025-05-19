@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using school_hub.Models.Lesson;
-using school_hub.Models.Users;
+using school_hub.Models;
 
 namespace school_hub.Models
 {

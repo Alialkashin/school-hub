@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using school_hub.Areas.Adminstration.ViewModels;
 using school_hub.Data;
 using school_hub.Models;
 
 namespace school_hub.Areas.Adminstration.Controllers
 {
+    [Area("Adminstration")]
     public class StudySectionController : Controller
     {
         private readonly ILogger<StudySection> _logger;
@@ -21,9 +21,13 @@ namespace school_hub.Areas.Adminstration.Controllers
         {
             if (id <= 0)
                 return View();
-            
+
+            return View();
             
 
+
+
+            
         }
         public IActionResult Index()
         {

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using school_hub.Data;
-using school_hub.Models.Users;
+using school_hub.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,8 +33,13 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{area=Public}/{controller=Home}/{action=Index}/{id?}");
+        name: "default",
+    pattern: "{controller=Home}/{action=/Index}/{id?}"
+    );
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=/Index}/{id?}");
 
 app.Run();
 //لتعديل واجهة واحدة
