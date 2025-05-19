@@ -9,10 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
+
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AppDBContext>();
 builder.Services.AddIdentity<User,IdentityRole<int>>()
 .AddDefaultTokenProviders()
 .AddEntityFrameworkStores<AppDBContext>();
-
+builder.Services.AddRazorPages();
 builder.Logging.AddConsole();
 
 var app = builder.Build();
@@ -39,7 +41,7 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=/Index}/{id?}");
-
+app.MapRazorPages();
 app.Run();
 //لتعديل واجهة واحدة
 //dotnet aspnet-codegenerator identity -dc ApplicationDbContext --files "Account/Login"
