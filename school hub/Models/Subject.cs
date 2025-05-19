@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using school_hub.Models.Users;
 namespace school_hub.Models
 {
     public class Subject : DisplayInfo

@@ -5,10 +5,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Abstractions;
 using school_hub.Models;
-using school_hub.Models.Exam;
-using school_hub.Models.Lesson;
-using school_hub.Models.Sections;
-using school_hub.Models.Users;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 

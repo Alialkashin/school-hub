@@ -1,0 +1,16 @@
+﻿@model StudySection
+
+@{
+    ViewData["Title"] = "تفاصيل القسم";
+}
+
+<div class="container mt-5">
+    <div class="card mx-auto shadow" style="max-width: 600px;">
+        <img src="~/images/@Model.ImagePath" class="card-img-top" alt="@Model.Name" />
+        <div class="card-body text-center">
+            <h2 class="card-title">@Model.Name</h2>
+            <p class="card-text">هذا القسم يحتوي على مجموعة من الدروس التعليمية المتنوعة.</p>
+            <a href="/StudySection/Index" class="btn btn-primary">العودة إلى الأقسام</a>
+        </div>
+    </div>
+</div>

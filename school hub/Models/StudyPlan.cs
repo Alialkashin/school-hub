@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using school_hub.Models;
-using school_hub.Models.Sections;
 namespace school_hub.Models
 {
     public class StudyPlan : DisplayInfo
