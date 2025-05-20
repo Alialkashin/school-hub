@@ -11,7 +11,7 @@ namespace school_hub.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public short ExamId { get; set; }
-        public int? PreviousLesson { get; set; }
+        public short? PreviousLesson { get; set; }
         public Unit Unit { get; set; }
         public Exam Exam { get; set; }
         public ICollection<Video> Videos { get; set; }
