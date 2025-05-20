@@ -19,8 +19,9 @@
                 <div class="card-body">
                     <h5 class="card-title">@plan.Name</h5>
                     <p class="card-text">@plan.Description</p>
+                         <img src="@plan.ImagePath" class="card-img-top"  />
                     <a asp-action="Details" asp-controller="StudyPlan" asp-route-id="@plan.StudySectionId" class="btn btn-primary">عرض التفاصيل</a>
-                    <img src="@plan.ImagePath" class="card-img-top"  />
+                   
 
                 </div>
             </div>
