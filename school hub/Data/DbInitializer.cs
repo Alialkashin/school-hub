@@ -19,8 +19,8 @@ public static class DbInitializer
         if (!context.StudyPlans.Any())
         {
             context.StudyPlans.AddRange(
-               new StudyPlan { Name = "الدورة الشتوية", Description = "خطة تعليمية للصف الأول", ImagePath = "images/plan1.jpg", StudySectionId = 1 },
-               new StudyPlan { Name = "الدورة الصيفية", Description = "خطة تعليمية للصف الثاني", ImagePath = "images/plan2.jpg", StudySectionId = 1 }
+               new StudyPlan { Name = "الدورة الشتوية", Description = "خطة تعليمية للصف الأول", ImagePath = "/images/plan1.png", StudySectionId = 1 },
+               new StudyPlan { Name = "الدورة الصيفية", Description = "خطة تعليمية للصف الثاني", ImagePath = "/images/plan2.png", StudySectionId = 1 }
 
            );
             context.SaveChanges();
@@ -88,8 +88,8 @@ public static class DbInitializer
         if (!context.Subjects.Any())
         {
             context.Subjects.AddRange(
-               new Subject { Name = "الرياضيات", Description = "مادة الرياضيات ", ImagePath = "images/math.png", TotalDuration = 40, TeacherId = 5, StudyPlanId = 1 },
-               new Subject { Name = "اللغة العربية", Description = "مادة اللغة العربية", ImagePath = "images/arabic.png", TotalDuration = 35, TeacherId = 5, StudyPlanId = 1 }
+               new Subject { Name = "الرياضيات", Description = "مادة الرياضيات ", ImagePath = "/images/math.png", TotalDuration = 40, TeacherId = 5, StudyPlanId = 1 },
+               new Subject { Name = "اللغة العربية", Description = "مادة اللغة العربية", ImagePath = "/images/arabic.png", TotalDuration = 35, TeacherId = 5, StudyPlanId = 1 }
 
            );
             context.SaveChanges();
