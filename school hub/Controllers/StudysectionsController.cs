@@ -5,10 +5,10 @@ using school_hub.Models;
 
 namespace school_hub.Areas.Public.Controllers
 {
-    public class StudySectionController : Controller
+    public class StudySectionsController : Controller
     {
         private readonly AppDBContext _context;
-        public StudySectionController(AppDBContext context)
+        public StudySectionsController(AppDBContext context)
         {
             _context = context;
 
@@ -22,7 +22,7 @@ namespace school_hub.Areas.Public.Controllers
         }
 
      
-        public async  Task<IActionResult> Details(short? id)
+        public async  Task<IActionResult> Details(int? id)
         {
             if(id == null)
             {

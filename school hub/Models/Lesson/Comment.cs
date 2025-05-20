@@ -11,7 +11,7 @@ namespace school_hub.Models
         public int StudentId { get; set; }
         public int VideoId { get; set; }
         public string Content { get; set; }
-        public DateOnly CommentDate { get; set; }
+        public DateTime CommentDate { get; set; }
         public ICollection<Reply>? Replys { get; set; }
         public Video? Video { get; set; }
         public Student? Student { get; set; }//notfacation prop
