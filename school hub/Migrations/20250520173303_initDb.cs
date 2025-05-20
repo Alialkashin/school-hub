@@ -59,7 +59,7 @@ namespace school_hub.Migrations
                 name: "Sections",
                 columns: table => new
                 {
-                    SectionId = table.Column<short>(type: "smallint", nullable: false)
+                    SectionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SectionType = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -183,7 +183,7 @@ namespace school_hub.Migrations
                 {
                     BookId = table.Column<short>(type: "smallint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LibrarySectionId = table.Column<short>(type: "smallint", nullable: false),
+                    LibrarySectionId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BookPath = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -204,7 +204,7 @@ namespace school_hub.Migrations
                 {
                     StudyPlanId = table.Column<short>(type: "smallint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StudySectionId = table.Column<short>(type: "smallint", nullable: false),
+                    StudySectionId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -302,7 +302,7 @@ namespace school_hub.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ExamId = table.Column<short>(type: "smallint", nullable: false),
-                    PreviousLesson = table.Column<int>(type: "int", nullable: true)
+                    PreviousLesson = table.Column<short>(type: "smallint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -433,7 +433,7 @@ namespace school_hub.Migrations
                     StudentId = table.Column<int>(type: "int", nullable: false),
                     VideoId = table.Column<int>(type: "int", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CommentDate = table.Column<DateOnly>(type: "date", nullable: false)
+                    CommentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -23,7 +23,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     AppDBContext context = scope.ServiceProvider.GetRequiredService<AppDBContext>();
-    await DbInitializer.SeedAsync(context);
+    DbInitializer.Seed(context);
 }
 
 

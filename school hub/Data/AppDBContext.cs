@@ -28,51 +28,6 @@ namespace school_hub.Data
 			#endregion
 
 
-			#region SeedData
-modelBuilder.Entity<StudySection>().HasData(
-        new StudySection 
-        { 
-            SectionId = 1, 
-            Name = "Mathematics", 
-            Description = "Mathematics study section covering algebra and geometry.",
-            ImagePath = "/images/sections/math.png",
-            SectionType = enSectionType.StudySection
-        },
-        new StudySection 
-        { 
-            SectionId = 2, 
-            Name = "Physics", 
-            Description = "Physics study section focusing on classical mechanics.",
-            ImagePath = "/images/sections/physics.png",
-            SectionType = enSectionType.StudySection
-        },
-        new StudySection 
-        { 
-            SectionId = 3, 
-            Name = "Chemistry", 
-            Description = "Chemistry study section including organic and inorganic chemistry.",
-            ImagePath = "/images/sections/chemistry.png",
-            SectionType = enSectionType.StudySection
-        },
-        new StudySection 
-        { 
-            SectionId = 4, 
-            Name = "Biology", 
-            Description = "Biology study section covering human anatomy and genetics.",
-            ImagePath = "/images/sections/biology.png",
-            SectionType = enSectionType.StudySection
-        },
-        new StudySection 
-        { 
-            SectionId = 5, 
-            Name = "Computer Science", 
-            Description = "Computer Science study section focusing on programming and algorithms.",
-            ImagePath = "/images/sections/cs.png",
-            SectionType = enSectionType.StudySection
-        }
-    );
-			#endregion
-
 			#region primary keys
 			modelBuilder.Entity<Answer>().HasKey(e => e.AnswerId);
 			modelBuilder.Entity<Exam>().HasKey(e => e.ExamId);

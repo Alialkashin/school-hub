@@ -6,7 +6,7 @@ namespace school_hub.Models
     {
 
         public short StudyPlanId { get; set; }
-        public short StudySectionId { get; set; }
+        public int StudySectionId { get; set; }
         public StudySection StudySection { get; set; }
         public ICollection<StudentStudyPlan> StudyPlanStudents { get; set; } //nav references
         public ICollection<Subject> Subjects { get; set; }

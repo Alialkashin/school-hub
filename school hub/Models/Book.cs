@@ -6,7 +6,7 @@ namespace school_hub.Models
     public class Book
     {
         public short BookId { get; set; }
-        public short LibrarySectionId { get; set; }
+        public int LibrarySectionId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string BookPath { get; set; }

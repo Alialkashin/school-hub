@@ -12,7 +12,7 @@ using school_hub.Data;
 namespace school_hub.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20250513124716_initDb")]
+    [Migration("20250520173303_initDb")]
     partial class initDb
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace school_hub.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.15")
+                .HasAnnotation("ProductVersion", "8.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -158,37 +158,7 @@ namespace school_hub.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("school_hub.Models.Book", b =>
-                {
-                    b.Property<short>("BookId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("BookId"));
-
-                    b.Property<string>("BookPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<short>("LibrarySectionId")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("BookId");
-
-                    b.HasIndex("LibrarySectionId");
-
-                    b.ToTable("Books");
-                });
-
-            modelBuilder.Entity("school_hub.Models.Exam.Answer", b =>
+            modelBuilder.Entity("school_hub.Models.Answer", b =>
                 {
                     b.Property<int>("AnswerId")
                         .ValueGeneratedOnAdd()
@@ -209,98 +179,37 @@ namespace school_hub.Migrations
                     b.ToTable("Answers");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Exam.Exam", b =>
+            modelBuilder.Entity("school_hub.Models.Book", b =>
                 {
-                    b.Property<short>("ExamId")
+                    b.Property<short>("BookId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("smallint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("ExamId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("BookId"));
 
-                    b.Property<byte>("ExamTime")
-                        .HasColumnType("tinyint");
-
-                    b.Property<short>("LessonId")
-                        .HasColumnType("smallint");
-
-                    b.Property<byte>("PassingScore")
-                        .HasColumnType("tinyint");
-
-                    b.HasKey("ExamId");
-
-                    b.HasIndex("LessonId")
-                        .IsUnique();
-
-                    b.ToTable("Exams");
-                });
-
-            modelBuilder.Entity("school_hub.Models.Exam.Question", b =>
-                {
-                    b.Property<int>("QuestionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("QuestionId"));
-
-                    b.Property<short>("ExamId")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("Text")
+                    b.Property<string>("BookPath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("QuestionId");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("ExamId");
+                    b.Property<int>("LibrarySectionId")
+                        .HasColumnType("int");
 
-                    b.ToTable("Questions");
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("BookId");
+
+                    b.HasIndex("LibrarySectionId");
+
+                    b.ToTable("Books");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Exam.StudentAnswer", b =>
-                {
-                    b.Property<int>("StudentExamId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AnswerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("StudentExamId", "AnswerId");
-
-                    b.HasIndex("AnswerId");
-
-                    b.ToTable("StudentAnswers");
-                });
-
-            modelBuilder.Entity("school_hub.Models.Exam.StudentExam", b =>
-                {
-                    b.Property<int>("StudentExamId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentExamId"));
-
-                    b.Property<DateOnly>("ExamDate")
-                        .HasColumnType("date");
-
-                    b.Property<short>("ExamId")
-                        .HasColumnType("smallint");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("TimeToComlete")
-                        .HasColumnType("tinyint");
-
-                    b.HasKey("StudentExamId");
-
-                    b.HasIndex("ExamId");
-
-                    b.HasIndex("StudentId");
-
-                    b.ToTable("StudentExams");
-                });
-
-            modelBuilder.Entity("school_hub.Models.Lesson.Comment", b =>
+            modelBuilder.Entity("school_hub.Models.Comment", b =>
                 {
                     b.Property<int>("CommentId")
                         .ValueGeneratedOnAdd()
@@ -308,8 +217,8 @@ namespace school_hub.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"));
 
-                    b.Property<DateOnly>("CommentDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("CommentDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -335,7 +244,32 @@ namespace school_hub.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Lesson.Lesson", b =>
+            modelBuilder.Entity("school_hub.Models.Exam", b =>
+                {
+                    b.Property<short>("ExamId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("smallint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("ExamId"));
+
+                    b.Property<byte>("ExamTime")
+                        .HasColumnType("tinyint");
+
+                    b.Property<short>("LessonId")
+                        .HasColumnType("smallint");
+
+                    b.Property<byte>("PassingScore")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("ExamId");
+
+                    b.HasIndex("LessonId")
+                        .IsUnique();
+
+                    b.ToTable("Exams");
+                });
+
+            modelBuilder.Entity("school_hub.Models.Lesson", b =>
                 {
                     b.Property<short>("LessonId")
                         .ValueGeneratedOnAdd()
@@ -353,8 +287,8 @@ namespace school_hub.Migrations
                     b.Property<byte>("LessonNo")
                         .HasColumnType("tinyint");
 
-                    b.Property<int?>("PreviousLesson")
-                        .HasColumnType("int");
+                    b.Property<short?>("PreviousLesson")
+                        .HasColumnType("smallint");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -370,7 +304,29 @@ namespace school_hub.Migrations
                     b.ToTable("Lessons");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Lesson.Reply", b =>
+            modelBuilder.Entity("school_hub.Models.Question", b =>
+                {
+                    b.Property<int>("QuestionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("QuestionId"));
+
+                    b.Property<short>("ExamId")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("QuestionId");
+
+                    b.HasIndex("ExamId");
+
+                    b.ToTable("Questions");
+                });
+
+            modelBuilder.Entity("school_hub.Models.Reply", b =>
                 {
                     b.Property<int>("ReplyId")
                         .ValueGeneratedOnAdd()
@@ -405,41 +361,13 @@ namespace school_hub.Migrations
                     b.ToTable("Replys");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Lesson.Video", b =>
+            modelBuilder.Entity("school_hub.Models.Section", b =>
                 {
-                    b.Property<int>("VideoId")
+                    b.Property<int>("SectionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VideoId"));
-
-                    b.Property<short>("Duration")
-                        .HasColumnType("smallint");
-
-                    b.Property<short>("LessonId")
-                        .HasColumnType("smallint");
-
-                    b.Property<int?>("PreviousVideo")
-                        .HasColumnType("int");
-
-                    b.Property<string>("VideoPath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("VideoId");
-
-                    b.HasIndex("LessonId");
-
-                    b.ToTable("Videos");
-                });
-
-            modelBuilder.Entity("school_hub.Models.Sections.Section", b =>
-                {
-                    b.Property<short>("SectionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("SectionId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SectionId"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -463,6 +391,50 @@ namespace school_hub.Migrations
                     b.HasDiscriminator<int>("SectionType");
 
                     b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("school_hub.Models.StudentAnswer", b =>
+                {
+                    b.Property<int>("StudentExamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AnswerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("StudentExamId", "AnswerId");
+
+                    b.HasIndex("AnswerId");
+
+                    b.ToTable("StudentAnswers");
+                });
+
+            modelBuilder.Entity("school_hub.Models.StudentExam", b =>
+                {
+                    b.Property<int>("StudentExamId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentExamId"));
+
+                    b.Property<DateOnly>("ExamDate")
+                        .HasColumnType("date");
+
+                    b.Property<short>("ExamId")
+                        .HasColumnType("smallint");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("TimeToComlete")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("StudentExamId");
+
+                    b.HasIndex("ExamId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("StudentExams");
                 });
 
             modelBuilder.Entity("school_hub.Models.StudentRating", b =>
@@ -539,8 +511,8 @@ namespace school_hub.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<short>("StudySectionId")
-                        .HasColumnType("smallint");
+                    b.Property<int>("StudySectionId")
+                        .HasColumnType("int");
 
                     b.HasKey("StudyPlanId");
 
@@ -617,7 +589,7 @@ namespace school_hub.Migrations
                     b.ToTable("Units");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Users.User", b =>
+            modelBuilder.Entity("school_hub.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -698,37 +670,65 @@ namespace school_hub.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("school_hub.Models.Sections.LibrarySection", b =>
+            modelBuilder.Entity("school_hub.Models.Video", b =>
                 {
-                    b.HasBaseType("school_hub.Models.Sections.Section");
+                    b.Property<int>("VideoId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("VideoId"));
+
+                    b.Property<short>("Duration")
+                        .HasColumnType("smallint");
+
+                    b.Property<short>("LessonId")
+                        .HasColumnType("smallint");
+
+                    b.Property<int?>("PreviousVideo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VideoPath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("VideoId");
+
+                    b.HasIndex("LessonId");
+
+                    b.ToTable("Videos");
+                });
+
+            modelBuilder.Entity("school_hub.Models.LibrarySection", b =>
+                {
+                    b.HasBaseType("school_hub.Models.Section");
 
                     b.HasDiscriminator().HasValue(1);
                 });
 
-            modelBuilder.Entity("school_hub.Models.Sections.StudySection", b =>
+            modelBuilder.Entity("school_hub.Models.StudySection", b =>
                 {
-                    b.HasBaseType("school_hub.Models.Sections.Section");
+                    b.HasBaseType("school_hub.Models.Section");
 
                     b.HasDiscriminator().HasValue(0);
                 });
 
-            modelBuilder.Entity("school_hub.Models.Users.Admin", b =>
+            modelBuilder.Entity("school_hub.Models.Admin", b =>
                 {
-                    b.HasBaseType("school_hub.Models.Users.User");
+                    b.HasBaseType("school_hub.Models.User");
 
                     b.HasDiscriminator().HasValue(0);
                 });
 
-            modelBuilder.Entity("school_hub.Models.Users.Student", b =>
+            modelBuilder.Entity("school_hub.Models.Student", b =>
                 {
-                    b.HasBaseType("school_hub.Models.Users.User");
+                    b.HasBaseType("school_hub.Models.User");
 
                     b.HasDiscriminator().HasValue(1);
                 });
 
-            modelBuilder.Entity("school_hub.Models.Users.Teacher", b =>
+            modelBuilder.Entity("school_hub.Models.Teacher", b =>
                 {
-                    b.HasBaseType("school_hub.Models.Users.User");
+                    b.HasBaseType("school_hub.Models.User");
 
                     b.HasDiscriminator().HasValue(2);
                 });
@@ -744,7 +744,7 @@ namespace school_hub.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("school_hub.Models.Users.User", null)
+                    b.HasOne("school_hub.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -753,7 +753,7 @@ namespace school_hub.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("school_hub.Models.Users.User", null)
+                    b.HasOne("school_hub.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -768,7 +768,7 @@ namespace school_hub.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("school_hub.Models.Users.User", null)
+                    b.HasOne("school_hub.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -777,27 +777,16 @@ namespace school_hub.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("school_hub.Models.Users.User", null)
+                    b.HasOne("school_hub.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("school_hub.Models.Book", b =>
+            modelBuilder.Entity("school_hub.Models.Answer", b =>
                 {
-                    b.HasOne("school_hub.Models.Sections.LibrarySection", "LibrarySection")
-                        .WithMany("Books")
-                        .HasForeignKey("LibrarySectionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("LibrarySection");
-                });
-
-            modelBuilder.Entity("school_hub.Models.Exam.Answer", b =>
-                {
-                    b.HasOne("school_hub.Models.Exam.Question", "Question")
+                    b.HasOne("school_hub.Models.Question", "Question")
                         .WithMany("Answers")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -806,81 +795,32 @@ namespace school_hub.Migrations
                     b.Navigation("Question");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Exam.Exam", b =>
+            modelBuilder.Entity("school_hub.Models.Book", b =>
                 {
-                    b.HasOne("school_hub.Models.Lesson.Lesson", "Lesson")
-                        .WithOne("Exam")
-                        .HasForeignKey("school_hub.Models.Exam.Exam", "LessonId")
+                    b.HasOne("school_hub.Models.LibrarySection", "LibrarySection")
+                        .WithMany("Books")
+                        .HasForeignKey("LibrarySectionId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Lesson");
+                    b.Navigation("LibrarySection");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Exam.Question", b =>
+            modelBuilder.Entity("school_hub.Models.Comment", b =>
                 {
-                    b.HasOne("school_hub.Models.Exam.Exam", "Exam")
-                        .WithMany("Questions")
-                        .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Exam");
-                });
-
-            modelBuilder.Entity("school_hub.Models.Exam.StudentAnswer", b =>
-                {
-                    b.HasOne("school_hub.Models.Exam.Answer", "Answer")
-                        .WithMany("StudentAnswers")
-                        .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("school_hub.Models.Exam.StudentExam", "StudentExam")
-                        .WithMany("StudentAnswers")
-                        .HasForeignKey("StudentExamId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Answer");
-
-                    b.Navigation("StudentExam");
-                });
-
-            modelBuilder.Entity("school_hub.Models.Exam.StudentExam", b =>
-                {
-                    b.HasOne("school_hub.Models.Exam.Exam", "Exam")
-                        .WithMany("StudentExams")
-                        .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("school_hub.Models.Users.Student", "Student")
-                        .WithMany("StudentExams")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Exam");
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("school_hub.Models.Lesson.Comment", b =>
-                {
-                    b.HasOne("school_hub.Models.Users.Student", "Student")
+                    b.HasOne("school_hub.Models.Student", "Student")
                         .WithMany("Comments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("school_hub.Models.Users.Teacher", "Teacher")
+                    b.HasOne("school_hub.Models.Teacher", "Teacher")
                         .WithMany("Comments")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("school_hub.Models.Lesson.Video", "Video")
+                    b.HasOne("school_hub.Models.Video", "Video")
                         .WithMany("Comments")
                         .HasForeignKey("VideoId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -893,7 +833,18 @@ namespace school_hub.Migrations
                     b.Navigation("Video");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Lesson.Lesson", b =>
+            modelBuilder.Entity("school_hub.Models.Exam", b =>
+                {
+                    b.HasOne("school_hub.Models.Lesson", "Lesson")
+                        .WithOne("Exam")
+                        .HasForeignKey("school_hub.Models.Exam", "LessonId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
+                });
+
+            modelBuilder.Entity("school_hub.Models.Lesson", b =>
                 {
                     b.HasOne("school_hub.Models.Unit", "Unit")
                         .WithMany("Lessons")
@@ -904,20 +855,31 @@ namespace school_hub.Migrations
                     b.Navigation("Unit");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Lesson.Reply", b =>
+            modelBuilder.Entity("school_hub.Models.Question", b =>
                 {
-                    b.HasOne("school_hub.Models.Lesson.Comment", "Comment")
+                    b.HasOne("school_hub.Models.Exam", "Exam")
+                        .WithMany("Questions")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Exam");
+                });
+
+            modelBuilder.Entity("school_hub.Models.Reply", b =>
+                {
+                    b.HasOne("school_hub.Models.Comment", "Comment")
                         .WithMany("Replys")
                         .HasForeignKey("CommentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("school_hub.Models.Users.Student", "Student")
+                    b.HasOne("school_hub.Models.Student", "Student")
                         .WithMany("Replies")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("school_hub.Models.Users.Teacher", "Teacher")
+                    b.HasOne("school_hub.Models.Teacher", "Teacher")
                         .WithMany("Replies")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -929,26 +891,53 @@ namespace school_hub.Migrations
                     b.Navigation("Teacher");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Lesson.Video", b =>
+            modelBuilder.Entity("school_hub.Models.StudentAnswer", b =>
                 {
-                    b.HasOne("school_hub.Models.Lesson.Lesson", "Lesson")
-                        .WithMany("Videos")
-                        .HasForeignKey("LessonId")
+                    b.HasOne("school_hub.Models.Answer", "Answer")
+                        .WithMany("StudentAnswers")
+                        .HasForeignKey("AnswerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Lesson");
+                    b.HasOne("school_hub.Models.StudentExam", "StudentExam")
+                        .WithMany("StudentAnswers")
+                        .HasForeignKey("StudentExamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Answer");
+
+                    b.Navigation("StudentExam");
+                });
+
+            modelBuilder.Entity("school_hub.Models.StudentExam", b =>
+                {
+                    b.HasOne("school_hub.Models.Exam", "Exam")
+                        .WithMany("StudentExams")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("school_hub.Models.Student", "Student")
+                        .WithMany("StudentExams")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Exam");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("school_hub.Models.StudentRating", b =>
                 {
-                    b.HasOne("school_hub.Models.Lesson.Lesson", "Lesson")
+                    b.HasOne("school_hub.Models.Lesson", "Lesson")
                         .WithMany("Ratings")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("school_hub.Models.Users.Student", "Student")
+                    b.HasOne("school_hub.Models.Student", "Student")
                         .WithMany("StudentRatings")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -967,7 +956,7 @@ namespace school_hub.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("school_hub.Models.Users.Student", "Student")
+                    b.HasOne("school_hub.Models.Student", "Student")
                         .WithMany("StudentStudyPlans")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -980,13 +969,13 @@ namespace school_hub.Migrations
 
             modelBuilder.Entity("school_hub.Models.StudentView", b =>
                 {
-                    b.HasOne("school_hub.Models.Users.Student", "Student")
+                    b.HasOne("school_hub.Models.Student", "Student")
                         .WithMany("StudentViews")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("school_hub.Models.Lesson.Video", "Video")
+                    b.HasOne("school_hub.Models.Video", "Video")
                         .WithMany("Views")
                         .HasForeignKey("VideoId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -999,7 +988,7 @@ namespace school_hub.Migrations
 
             modelBuilder.Entity("school_hub.Models.StudyPlan", b =>
                 {
-                    b.HasOne("school_hub.Models.Sections.StudySection", "StudySection")
+                    b.HasOne("school_hub.Models.StudySection", "StudySection")
                         .WithMany("StudyPlans")
                         .HasForeignKey("StudySectionId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1016,7 +1005,7 @@ namespace school_hub.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("school_hub.Models.Users.Teacher", "Teacher")
+                    b.HasOne("school_hub.Models.Teacher", "Teacher")
                         .WithMany("Subjects")
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1038,34 +1027,35 @@ namespace school_hub.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Exam.Answer", b =>
+            modelBuilder.Entity("school_hub.Models.Video", b =>
+                {
+                    b.HasOne("school_hub.Models.Lesson", "Lesson")
+                        .WithMany("Videos")
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
+                });
+
+            modelBuilder.Entity("school_hub.Models.Answer", b =>
                 {
                     b.Navigation("StudentAnswers");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Exam.Exam", b =>
+            modelBuilder.Entity("school_hub.Models.Comment", b =>
+                {
+                    b.Navigation("Replys");
+                });
+
+            modelBuilder.Entity("school_hub.Models.Exam", b =>
                 {
                     b.Navigation("Questions");
 
                     b.Navigation("StudentExams");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Exam.Question", b =>
-                {
-                    b.Navigation("Answers");
-                });
-
-            modelBuilder.Entity("school_hub.Models.Exam.StudentExam", b =>
-                {
-                    b.Navigation("StudentAnswers");
-                });
-
-            modelBuilder.Entity("school_hub.Models.Lesson.Comment", b =>
-                {
-                    b.Navigation("Replys");
-                });
-
-            modelBuilder.Entity("school_hub.Models.Lesson.Lesson", b =>
+            modelBuilder.Entity("school_hub.Models.Lesson", b =>
                 {
                     b.Navigation("Exam")
                         .IsRequired();
@@ -1075,11 +1065,14 @@ namespace school_hub.Migrations
                     b.Navigation("Videos");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Lesson.Video", b =>
+            modelBuilder.Entity("school_hub.Models.Question", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("Answers");
+                });
 
-                    b.Navigation("Views");
+            modelBuilder.Entity("school_hub.Models.StudentExam", b =>
+                {
+                    b.Navigation("StudentAnswers");
                 });
 
             modelBuilder.Entity("school_hub.Models.StudyPlan", b =>
@@ -1099,17 +1092,24 @@ namespace school_hub.Migrations
                     b.Navigation("Lessons");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Sections.LibrarySection", b =>
+            modelBuilder.Entity("school_hub.Models.Video", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Views");
+                });
+
+            modelBuilder.Entity("school_hub.Models.LibrarySection", b =>
                 {
                     b.Navigation("Books");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Sections.StudySection", b =>
+            modelBuilder.Entity("school_hub.Models.StudySection", b =>
                 {
                     b.Navigation("StudyPlans");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Users.Student", b =>
+            modelBuilder.Entity("school_hub.Models.Student", b =>
                 {
                     b.Navigation("Comments");
 
@@ -1124,7 +1124,7 @@ namespace school_hub.Migrations
                     b.Navigation("StudentViews");
                 });
 
-            modelBuilder.Entity("school_hub.Models.Users.Teacher", b =>
+            modelBuilder.Entity("school_hub.Models.Teacher", b =>
                 {
                     b.Navigation("Comments");
 

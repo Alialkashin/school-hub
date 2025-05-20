@@ -192,8 +192,8 @@ namespace school_hub.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<short>("LibrarySectionId")
-                        .HasColumnType("smallint");
+                    b.Property<int>("LibrarySectionId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -214,8 +214,8 @@ namespace school_hub.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"));
 
-                    b.Property<DateOnly>("CommentDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("CommentDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -284,8 +284,8 @@ namespace school_hub.Migrations
                     b.Property<byte>("LessonNo")
                         .HasColumnType("tinyint");
 
-                    b.Property<int?>("PreviousLesson")
-                        .HasColumnType("int");
+                    b.Property<short?>("PreviousLesson")
+                        .HasColumnType("smallint");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -360,11 +360,11 @@ namespace school_hub.Migrations
 
             modelBuilder.Entity("school_hub.Models.Section", b =>
                 {
-                    b.Property<short>("SectionId")
+                    b.Property<int>("SectionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint");
+                        .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("SectionId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SectionId"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -508,8 +508,8 @@ namespace school_hub.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<short>("StudySectionId")
-                        .HasColumnType("smallint");
+                    b.Property<int>("StudySectionId")
+                        .HasColumnType("int");
 
                     b.HasKey("StudyPlanId");
 
@@ -707,48 +707,6 @@ namespace school_hub.Migrations
                     b.HasBaseType("school_hub.Models.Section");
 
                     b.HasDiscriminator().HasValue(0);
-
-                    b.HasData(
-                        new
-                        {
-                            SectionId = (short)1,
-                            Description = "Mathematics study section covering algebra and geometry.",
-                            ImagePath = "/images/sections/math.png",
-                            Name = "Mathematics",
-                            SectionType = 0
-                        },
-                        new
-                        {
-                            SectionId = (short)2,
-                            Description = "Physics study section focusing on classical mechanics.",
-                            ImagePath = "/images/sections/physics.png",
-                            Name = "Physics",
-                            SectionType = 0
-                        },
-                        new
-                        {
-                            SectionId = (short)3,
-                            Description = "Chemistry study section including organic and inorganic chemistry.",
-                            ImagePath = "/images/sections/chemistry.png",
-                            Name = "Chemistry",
-                            SectionType = 0
-                        },
-                        new
-                        {
-                            SectionId = (short)4,
-                            Description = "Biology study section covering human anatomy and genetics.",
-                            ImagePath = "/images/sections/biology.png",
-                            Name = "Biology",
-                            SectionType = 0
-                        },
-                        new
-                        {
-                            SectionId = (short)5,
-                            Description = "Computer Science study section focusing on programming and algorithms.",
-                            ImagePath = "/images/sections/cs.png",
-                            Name = "Computer Science",
-                            SectionType = 0
-                        });
                 });
 
             modelBuilder.Entity("school_hub.Models.Admin", b =>
