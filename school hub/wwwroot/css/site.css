@@ -20,6 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+<<<<<<< HEAD
 .admin-container {
     display: flex;
     flex-direction: row-reverse; /* ÚÔÇä íÕíÑ ÇáÚãæÏ Úáì Çáíãíä */
@@ -63,3 +64,18 @@ body {
     padding: 30px;
     background-color: #f8f9fa;
 }
+=======
+.navbar-custom {
+    background-color: #cce5ff; /* ÃÒÑÞ ÝÇÊÍ */
+}
+
+    .navbar-custom .nav-link {
+        color: #004085 !important; /* áæä ÃÒÑÞ ÛÇãÞ ááßáãÇÊ */
+        margin-left: 15px; /* ãÓÇÝÉ Èíä ÇáßáãÇÊ */
+        font-weight: 500;
+    }
+
+    .navbar-custom .btn {
+        margin-left: 10px;
+    }
+>>>>>>> 21ff8666a08437e19037bacaa39d9108e1e1a721

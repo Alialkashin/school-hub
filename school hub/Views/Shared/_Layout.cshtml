@@ -10,30 +10,51 @@
 </head>
 <body>
     <header>
+   @*      <a class="navbar-brand d-flex align-items-center" href="/">
+    <img src="~/images/logo.png" alt="شعار المنصة" style="height: 40px;" class="me-2" />
+    <span class="fw-bold text-primary">منصة تعليمية</span>
+</a>        مشان شعار المنصة *@
 
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">school_hub</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg navbar-custom shadow">
+            <div class="container">
+                <a class="navbar-brand fw-bold" href="#">منصة تعليمية</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse justify-content-between" id="mainNavbar">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link active" href="/">الرئيسية</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" href="/StudySections">الأقسام</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Library">مكتبة الموقع</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/About">لمحة عنا</a>
                         </li>
                     </ul>
+                    <div class="d-flex">
+                        <a href="/Identity/Account/Register" class="btn btn-outline-primary me-2">إنشاء حساب</a>
+                        <a asp-area="Identity" asp-page="/Account/Rigister" class="btn btn-primary text-white">تسجيل دخول للمنصة</a>
+                    </div>
                 </div>
             </div>
         </nav>
-    </header>
+            <!-- Navbar ينتهي هون -->
+
+            <div class="container">
+                @RenderBody()
+            </div>
+        </header>
+        
+
+    
     <div class="container">
         <main role="main" class="pb-3">
-            @RenderBody()
+         
         </main>
     </div>
 
@@ -47,4 +68,5 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>
