@@ -14,9 +14,15 @@ namespace school_hub.Controllers
 
         public IActionResult Details(int id)
         {
-            var studyPlan = _context.StudyPlans
+            StudyPlan? studyPlan = _context.StudyPlans
             .Include(sp => sp.Subjects)
-         .FirstOrDefault(sp => sp.StudyPlanId == id);
+          .FirstOrDefault(sp => sp.StudyPlanId == id);
+          
+            if (studyPlan == null)
+            {
+                
+                return NotFound();
+            }
             return View(studyPlan);
 
         }
