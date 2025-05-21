@@ -55,7 +55,7 @@ namespace school_hub.Areas.Adminstration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SectionId,SectionType,Name,Description,ImagePath")] StudySection studySection)
+        public async Task<IActionResult> Create(StudySection studySection)
         {
             if (ModelState.IsValid)
             {
