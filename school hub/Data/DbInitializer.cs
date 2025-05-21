@@ -95,7 +95,7 @@ public static class DbInitializer
             context.SaveChanges();
         }
 
-       /* if (!context.Units.Any())
+       if (!context.Units.Any())
         {
             context.Units.AddRange(
                new Unit { Name = "الوحدة الأولى", Description = "مقدمة في الأعداد", ImagePath = "images/unit1.png", SubjectId = 1 },
@@ -104,7 +104,6 @@ public static class DbInitializer
            );
             context.SaveChanges();
         }
-        */
 
     }
 }
