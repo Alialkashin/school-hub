@@ -20,3 +20,46 @@ html {
 body {
   margin-bottom: 60px;
 }
+.admin-container {
+    display: flex;
+    flex-direction: row-reverse; /* ⁄‘«‰ Ì’Ì— «·⁄„Êœ ⁄·Ï «·Ì„Ì‰ */
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    width: 250px;
+    background-color: #000; /* Œ·›Ì… ”Êœ«¡ */
+    color: #fff;
+    padding: 20px;
+    min-height: 100vh;
+    position: sticky;
+    top: 0;
+}
+
+    .admin-sidebar .nav-link {
+        color: #fff;
+        padding: 10px;
+        display: block;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        transition: background 0.3s;
+    }
+
+        .admin-sidebar .nav-link:hover {
+            background-color: #333;
+            text-decoration: none;
+        }
+
+    .admin-sidebar .sidebar-header {
+        margin-bottom: 30px;
+        font-size: 20px;
+        font-weight: bold;
+        text-align: center;
+        color: #fff;
+    }
+
+.admin-main {
+    flex-grow: 1;
+    padding: 30px;
+    background-color: #f8f9fa;
+}
