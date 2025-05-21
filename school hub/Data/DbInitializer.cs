@@ -88,7 +88,7 @@ public static class DbInitializer
         if (!context.Subjects.Any())
         {
             context.Subjects.AddRange(
-               new Subject { Name = "الرياضيات", Description = "مادة الرياضيات ", ImagePath = "/images/math.png", TotalDuration = 40, TeacherId = 5, StudyPlanId = 1 },
+               new Subject { Name = "الرياضيات", Description = "بسم الله الرحمن الرحيم ", ImagePath = "/images/math.png", TotalDuration = 40, TeacherId = 5, StudyPlanId = 1 },
                new Subject { Name = "اللغة العربية", Description = "مادة اللغة العربية", ImagePath = "/images/arabic.png", TotalDuration = 35, TeacherId = 5, StudyPlanId = 1 }
 
            );

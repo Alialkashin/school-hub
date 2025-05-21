@@ -20,3 +20,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+.navbar-custom {
+    background-color: #cce5ff; /* √“—ﬁ ›« Õ */
+}
+
+    .navbar-custom .nav-link {
+        color: #004085 !important; /* ·Ê‰ √“—ﬁ €«„ﬁ ··ﬂ·„«  */
+        margin-left: 15px; /* „”«›… »Ì‰ «·ﬂ·„«  */
+        font-weight: 500;
+    }
+
+    .navbar-custom .btn {
+        margin-left: 10px;
+    }
