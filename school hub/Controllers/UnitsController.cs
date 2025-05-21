@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using school_hub.Data;
+using school_hub.Models;
 
 namespace school_hub.Controllers
 {
@@ -10,9 +12,14 @@ namespace school_hub.Controllers
         {
             _context = context;
         }
-        public IActionResult Details(int? id)
+        public IActionResult Details(int id)
         {
-            throw new NotImplementedException();
+            Unit? unit = _context.Units.FirstOrDefault(u => u.UnitId == id);
+            if (unit == null)
+            {
+                return NotFound();
+            }
+            return View(unit);
         }
         
     }
