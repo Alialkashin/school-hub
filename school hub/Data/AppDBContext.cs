@@ -242,6 +242,10 @@ namespace school_hub.Data
 		public DbSet<StudentAnswer> StudentAnswers { get; set; }
 		public DbSet<StudentRating> StudentRatings { get; set; }
 		public DbSet<StudentStudyPlan> StudentSubscriptions { get; set; }
+
+public DbSet<school_hub.Models.StudySection> StudySection { get; set; } = default!;
+
+public DbSet<school_hub.Models.LibrarySection> LibrarySection { get; set; } = default!;
 		#endregion
 	}
 }
