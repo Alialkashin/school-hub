@@ -23,5 +23,6 @@ namespace school_hub.Controllers
             }
             return View(subject);
         }
+        
     }
 }
