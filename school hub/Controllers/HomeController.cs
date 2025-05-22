@@ -19,5 +19,9 @@ namespace school_hub.Areas.Public.Controllers
         {
             return View();
         }
+        public IActionResult About()
+        {
+            return View();
+        }
     }
 }
