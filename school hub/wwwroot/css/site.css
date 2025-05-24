@@ -20,37 +20,43 @@ html {
 body {
   margin-bottom: 60px;
 }
-<<<<<<< HEAD
+
 .admin-container {
     display: flex;
-    flex-direction: row-reverse; /* ÚÔÇä íÕíÑ ÇáÚãæÏ Úáì Çáíãíä */
+    flex-direction: row;
     min-height: 100vh;
 }
 
 .admin-sidebar {
     width: 250px;
-    background-color: #000; /* ÎáÝíÉ ÓæÏÇÁ */
+    background-color: #343a40; /* ÎáÝíÉ ÓæÏÇÁ */
     color: #fff;
     padding: 20px;
     min-height: 100vh;
     position: sticky;
     top: 0;
+
 }
 
     .admin-sidebar .nav-link {
         color: #fff;
-        padding: 10px;
+       
         display: block;
         border-radius: 5px;
         margin-bottom: 5px;
         transition: background 0.3s;
+        padding: 0 20px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
         .admin-sidebar .nav-link:hover {
             background-color: #333;
             text-decoration: none;
         }
-
+.sidebar-header {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
     .admin-sidebar .sidebar-header {
         margin-bottom: 30px;
         font-size: 20px;
@@ -64,7 +70,7 @@ body {
     padding: 30px;
     background-color: #f8f9fa;
 }
-=======
+
 .navbar-custom {
     background-color: #cce5ff; /* ÃÒÑÞ ÝÇÊÍ */
 }
@@ -78,4 +84,29 @@ body {
     .navbar-custom .btn {
         margin-left: 10px;
     }
->>>>>>> 21ff8666a08437e19037bacaa39d9108e1e1a721
+.icon-orange {
+    color: orange;
+}
+
+.icon-blue {
+    color: royalblue;
+}
+
+.icon-green {
+    color: seagreen;
+}
+
+.icon-purple {
+    color: purple;
+}
+
+.icon-red {
+    color: crimson;
+}
+
+/*>>>>>>> 21ff8666a08437e19037bacaa39d9108e1e1a721*/
+.icon-gradient {
+    background: linear-gradient(45deg, #007bff, #28a745, #ffc107);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

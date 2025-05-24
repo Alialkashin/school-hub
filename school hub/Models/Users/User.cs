@@ -12,9 +12,17 @@ namespace school_hub.Models
     }
     public enum enUserType
     {
+   
+        [Display(Name = "مشرف")]
         Admin,
+
+        [Display(Name = "طالب")]
         Student,
+
+        [Display(Name = "معلم")]
         Teacher
-    }
+    
+
+}
 
 }

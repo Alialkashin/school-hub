@@ -7,6 +7,7 @@
 
 <h1>Index</h1>
 
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -41,7 +42,7 @@
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImagePath)
+                    <img src="@Html.DisplayFor(modelItem => item.ImagePath)" class="tumbnail" style="width:120px; height:100px" />
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.UnitId">Edit</a> |

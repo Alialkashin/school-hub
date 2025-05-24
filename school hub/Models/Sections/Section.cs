@@ -10,7 +10,10 @@ namespace school_hub.Models
     }
     public enum enSectionType
     {
+        [Display(Name = "قسم دراسي")]
         StudySection,
+
+        [Display(Name = "قسم المكتبة")]
         LibrarySection
     }
 }

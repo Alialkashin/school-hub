@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using school_hub.Areas.Adminstration.ViewModels;
 using school_hub.Data;
 using school_hub.Models;
 
@@ -14,10 +15,13 @@ namespace school_hub.Areas.Adminstration.Controllers
     public class UnitsController : Controller
     {
         private readonly AppDBContext _context;
+        private readonly IWebHostEnvironment _hostingEnvironmentunit;
 
-        public UnitsController(AppDBContext context)
+        public UnitsController(AppDBContext context,IWebHostEnvironment _hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironmentunit = _hostingEnvironment;
+
         }
 
         // GET: Adminstration/Units
@@ -49,8 +53,16 @@ namespace school_hub.Areas.Adminstration.Controllers
         // GET: Adminstration/Units/Create
         public IActionResult Create()
         {
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "SubjectId");
-            return View();
+            InputUnitViewModel inputUnitViewModel = new InputUnitViewModel();
+            inputUnitViewModel.Subjects =  _context.Subjects
+            .Select(s => new SelectListItem
+            {
+                Value = s.SubjectId.ToString(), 
+                Text = s.Name
+            })
+            .ToList();
+
+            return View(inputUnitViewModel);
         }
 
         // POST: Adminstration/Units/Create
@@ -58,16 +70,39 @@ namespace school_hub.Areas.Adminstration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UnitId,SubjectId,Name,Description,ImagePath")] Unit unit)
+        public async Task<IActionResult> Create(InputUnitViewModel model)
         {
             if (ModelState.IsValid)
-            {
-                _context.Add(unit);
+            {Unit un=new Unit();
+                if (model.File != null && model.File.Length > 0)
+                { 
+                    
+                    var uploadsFolder = Path.Combine(_hostingEnvironmentunit.WebRootPath, "images/Units/");
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.File.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    Directory.CreateDirectory(uploadsFolder);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.File.CopyToAsync(fileStream);
+                    }
+
+                    un.ImagePath = "/images/Units/" + uniqueFileName;
+                }
+                un.Name= model.Name;
+                un.Description= model.Description;
+                un.SubjectId = model.SubjectId;
+
+
+
+                _context.Units.Add(un);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["SubjectId"] = new SelectList(_context.Subjects, "SubjectId", "SubjectId", unit.SubjectId);
-            return View(unit);
+
+
+
+            return View(model);
         }
 
         // GET: Adminstration/Units/Edit/5

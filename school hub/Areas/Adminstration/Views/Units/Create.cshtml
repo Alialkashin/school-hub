@@ -1,4 +1,4 @@
-﻿@model school_hub.Models.Unit
+﻿@model InputUnitViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -11,12 +11,16 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-area="Adminstration" asp-controller="StudySections" asp-action="Create" method="post">
+        <form asp-action="Create" method="post" enctype="multipart/form-data" >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        @*     <div class="form-group">
+            <div class="form-group">
                 <label asp-for="SubjectId" class="control-label"></label>
-                <select asp-for="SubjectId" class ="form-control" asp-items="ViewBag.SubjectId"></select>
-            </div> *@
+                <select asp-for="SubjectId" class="form-control" asp-items="Model.Subjects">
+                    <option value"">اختر القسم</option>
+                </select>
+                <span asp-validation-for="SubjectId"></span>
+            </div> 
+            <input type="hidden" value="Model.Subjects" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -28,9 +32,9 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImagePath" class="control-label"></label>
-                <input asp-for="ImagePath" class="form-control" />
-                <span asp-validation-for="ImagePath" class="text-danger"></span>
+                <label asp-for="File" class="control-label"></label>
+                <input asp-for="File" class="form-control" type="file" />
+                <span asp-validation-for="File" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

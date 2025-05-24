@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using school_hub.Areas.Adminstration.ViewModels;
 using school_hub.Data;
 using school_hub.Models;
 
@@ -14,10 +15,12 @@ namespace school_hub.Areas.Adminstration.Controllers
     public class StudyPlansController : Controller
     {
         private readonly AppDBContext _context;
+        private readonly IWebHostEnvironment _hostingEnvironmentstudyplans;
 
-        public StudyPlansController(AppDBContext context)
+        public StudyPlansController(AppDBContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironmentstudyplans = hostingEnvironment;
         }
 
         // GET: Adminstration/StudyPlans
@@ -49,8 +52,15 @@ namespace school_hub.Areas.Adminstration.Controllers
         // GET: Adminstration/StudyPlans/Create
         public IActionResult Create()
         {
-            ViewData["StudySectionId"] = new SelectList(_context.Set<StudySection>(), "SectionId", "SectionId");
-            return View();
+            InputStudyPlansViewModel model = new InputStudyPlansViewModel();
+          model.StudySection=_context.StudyPlans
+                .Select(s => new SelectListItem
+          {
+              Value = s.StudySectionId.ToString(),
+              Text = s.Name
+          })
+            .ToList();
+            return View(model);
         }
 
         // POST: Adminstration/StudyPlans/Create
@@ -58,18 +68,37 @@ namespace school_hub.Areas.Adminstration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudyPlanId,StudySectionId,Name,Description,ImagePath")] StudyPlan studyPlan)
+        public async Task<IActionResult> Create(InputStudyPlansViewModel model)
         {
             if (ModelState.IsValid)
-            {
-                _context.Add(studyPlan);
+            {   StudyPlan studyPlan=new StudyPlan();
+                if (model.File != null && model.File.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(_hostingEnvironmentstudyplans.WebRootPath, "images/studyplans/");
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.File.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    Directory.CreateDirectory(uploadsFolder);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.File.CopyToAsync(fileStream);
+                    }
+
+                    studyPlan.ImagePath = "/images/studyplans/" + uniqueFileName;
+                }
+                studyPlan.Name= model.Name;
+                studyPlan.Description= model.Description;
+                studyPlan.StudySectionId = model.StudySectionId;
+
+                _context.StudyPlans.Add(studyPlan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StudySectionId"] = new SelectList(_context.Set<StudySection>(), "SectionId", "SectionId", studyPlan.StudySectionId);
-            return View(studyPlan);
-        }
 
+
+
+            return View(model);
+        }
         // GET: Adminstration/StudyPlans/Edit/5
         public async Task<IActionResult> Edit(short? id)
         {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using school_hub.Areas.Adminstration.ViewModels;
 using school_hub.Data;
 using school_hub.Models;
 
@@ -14,16 +15,17 @@ namespace school_hub.Areas.Adminstration.Controllers
     public class StudySectionsController : Controller
     {
         private readonly AppDBContext _context;
-
-        public StudySectionsController(AppDBContext context)
+        private readonly IWebHostEnvironment _hostingEnvironmentstudysection;
+        public StudySectionsController(AppDBContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
+           _hostingEnvironmentstudysection = hostingEnvironment;
         }
 
         // GET: Adminstration/StudySections
         public async Task<IActionResult> Index()
         {
-            return View(await _context.StudySection.ToListAsync());
+            return View(await _context.Sections.OfType<StudySection>().ToListAsync());
         }
 
         // GET: Adminstration/StudySections/Details/5
@@ -34,7 +36,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 return NotFound();
             }
 
-            var studySection = await _context.StudySection
+            var studySection = await _context.Sections.OfType<StudySection>()
                 .FirstOrDefaultAsync(m => m.SectionId == id);
             if (studySection == null)
             {
@@ -47,7 +49,7 @@ namespace school_hub.Areas.Adminstration.Controllers
         // GET: Adminstration/StudySections/Create
         public IActionResult Create()
         {
-            return View();
+            return View(new InputDisplayInfoViewModel());
         }
 
         // POST: Adminstration/StudySections/Create
@@ -55,15 +57,36 @@ namespace school_hub.Areas.Adminstration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(StudySection studySection)
+        public async Task<IActionResult> Create(InputDisplayInfoViewModel vmstudySection)
         {
+             StudySection studySection = new StudySection();
             if (ModelState.IsValid)
             {
-                _context.Add(studySection);
+                if (vmstudySection.File != null && vmstudySection.File.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(_hostingEnvironmentstudysection.WebRootPath, "images/StudySections/");
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + vmstudySection.File.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    Directory.CreateDirectory(uploadsFolder);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await vmstudySection.File.CopyToAsync(fileStream);
+                    }
+
+                    studySection.ImagePath = "/images/StudySections/" + uniqueFileName;
+                }
+                studySection.Name = vmstudySection.Name;
+                studySection.Description = vmstudySection.Description;
+                studySection.SectionType = enSectionType.StudySection;
+                _context.Sections.Add(studySection);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(studySection);
+
+
+
+            return View(vmstudySection);
         }
 
         // GET: Adminstration/StudySections/Edit/5
@@ -74,7 +97,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 return NotFound();
             }
 
-            var studySection = await _context.StudySection.FindAsync(id);
+            var studySection = await _context.Sections.FindAsync(id);
             if (studySection == null)
             {
                 return NotFound();
@@ -125,7 +148,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 return NotFound();
             }
 
-            var studySection = await _context.StudySection
+            var studySection = await _context.Sections
                 .FirstOrDefaultAsync(m => m.SectionId == id);
             if (studySection == null)
             {
@@ -140,10 +163,10 @@ namespace school_hub.Areas.Adminstration.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var studySection = await _context.StudySection.FindAsync(id);
+            var studySection = await _context.Sections.FindAsync(id);
             if (studySection != null)
             {
-                _context.StudySection.Remove(studySection);
+                _context.Sections.Remove(studySection);
             }
 
             await _context.SaveChangesAsync();
@@ -152,7 +175,7 @@ namespace school_hub.Areas.Adminstration.Controllers
 
         private bool StudySectionExists(int id)
         {
-            return _context.StudySection.Any(e => e.SectionId == id);
+            return _context.Sections.Any(e => e.SectionId == id);
         }
     }
 }

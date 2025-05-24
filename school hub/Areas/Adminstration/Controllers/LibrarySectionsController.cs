@@ -5,8 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using school_hub.Areas.Adminstration.ViewModels;
 using school_hub.Data;
 using school_hub.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace school_hub.Areas.Adminstration.Controllers
 {
@@ -14,16 +17,17 @@ namespace school_hub.Areas.Adminstration.Controllers
     public class LibrarySectionsController : Controller
     {
         private readonly AppDBContext _context;
-
-        public LibrarySectionsController(AppDBContext context)
+        private readonly IWebHostEnvironment _hostingEnvironmentlibary;
+        public LibrarySectionsController(AppDBContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironmentlibary = hostingEnvironment;
         }
 
         // GET: Adminstration/LibrarySections
         public async Task<IActionResult> Index()
         {
-            return View(await _context.LibrarySection.ToListAsync());
+            return View(await _context.Sections.OfType<LibrarySection>().ToListAsync());
         }
 
         // GET: Adminstration/LibrarySections/Details/5
@@ -34,7 +38,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 return NotFound();
             }
 
-            var librarySection = await _context.LibrarySection
+            var librarySection = await _context.Sections
                 .FirstOrDefaultAsync(m => m.SectionId == id);
             if (librarySection == null)
             {
@@ -47,24 +51,91 @@ namespace school_hub.Areas.Adminstration.Controllers
         // GET: Adminstration/LibrarySections/Create
         public IActionResult Create()
         {
-            return View();
+
+
+
+            var model = new InputBookViewModel();
+
+            // جلب الأقسام من النوع LibrarySection فقط
+            var librarySections = _context.Sections
+                .OfType<LibrarySection>()
+                .Select(s => new SelectListItem
+                {
+                    Value = s.SectionId.ToString(),
+                    Text = s.Name
+                }).ToList();
+
+            model.LibrarySection = librarySections;
+
+            return View(model);
+
+
+
+
+
         }
 
+
+
+        
+
+
+        public List<SelectListItem> GetSectionTypeSelectList()
+    {
+        var enumType = typeof(enSectionType);
+        var values = Enum.GetValues(enumType).Cast<enSectionType>();
+
+        var items = values.Select(e => new SelectListItem
+        {
+            Value = ((int)e).ToString(),
+            Text = e.GetDisplayName() // تستخدم امتدادك الخاص هنا
+        }).ToList();
+
+        return items;
+    }
+
+
         // POST: Adminstration/LibrarySections/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // To protect from overpostin attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SectionId,SectionType,Name,Description,ImagePath")] LibrarySection librarySection)
+        public async Task<IActionResult> Create(InputBookViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(librarySection);
+               Book book=new Book();
+                if (model.File != null && model.File.Length > 0)
+                {
+
+                    var uploadsFolder = Path.Combine(_hostingEnvironmentlibary.WebRootPath, "images/library/");
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.File.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    Directory.CreateDirectory(uploadsFolder);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.File.CopyToAsync(fileStream);
+                    }
+
+                    book.BookPath = "/images/library/" + uniqueFileName;
+                }
+                book.Title = model.Name;
+                book.Description = model.Description;
+                book.LibrarySectionId = model.LibrarySectionId;
+
+
+
+                _context.Books.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(librarySection);
+
+
+
+            return View(model);
         }
+
 
         // GET: Adminstration/LibrarySections/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -74,7 +145,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 return NotFound();
             }
 
-            var librarySection = await _context.LibrarySection.FindAsync(id);
+            var librarySection = await _context.Sections.FindAsync(id);
             if (librarySection == null)
             {
                 return NotFound();
@@ -125,7 +196,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 return NotFound();
             }
 
-            var librarySection = await _context.LibrarySection
+            var librarySection = await _context.Sections
                 .FirstOrDefaultAsync(m => m.SectionId == id);
             if (librarySection == null)
             {
@@ -140,10 +211,10 @@ namespace school_hub.Areas.Adminstration.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var librarySection = await _context.LibrarySection.FindAsync(id);
+            var librarySection = await _context.Sections.FindAsync(id);
             if (librarySection != null)
             {
-                _context.LibrarySection.Remove(librarySection);
+                _context.Sections.Remove(librarySection);
             }
 
             await _context.SaveChangesAsync();
@@ -152,7 +223,7 @@ namespace school_hub.Areas.Adminstration.Controllers
 
         private bool LibrarySectionExists(int id)
         {
-            return _context.LibrarySection.Any(e => e.SectionId == id);
+            return _context.Sections.Any(e => e.SectionId == id);
         }
     }
 }

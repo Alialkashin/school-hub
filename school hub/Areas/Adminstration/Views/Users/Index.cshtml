@@ -1,0 +1,175 @@
+﻿@model IEnumerable<school_hub.Models.User>
+
+@{
+    ViewData["Title"] = "Index";
+
+}
+
+<h1>Index</h1>
+<form method="get" class="row m-3">
+    <div class="col-md-3">
+        <select name="userType" class="form-control">
+            <option value="">كل انواع</option>
+            <option value="Admin">المشرف</option>
+            <option value="Teacher">المعلم</option>
+            <option value="Student">الطالب</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="isActive">
+            <option value="">كل الحالات</option>
+            <option value="true">نشط</option>
+            <option value="false">محظور</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <input type="submit" class="btn btn-primary" value="تصفية" />
+    </div>
+</form>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProfilePicturePath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+         @*    <th>
+                @Html.DisplayNameFor(model => model.NormalizedUserName)
+            </th> *@
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+        @*     <th>
+                @Html.DisplayNameFor(model => model.NormalizedEmail)
+            </th> *@
+@*             <th>
+                @Html.DisplayNameFor(model => model.EmailConfirmed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PasswordHash)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SecurityStamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ConcurrencyStamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TwoFactorEnabled)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LockoutEnd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LockoutEnabled)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccessFailedCount)
+            </th> *@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                    <img src="@Html.DisplayFor(modelItem => item.ProfilePicturePath)" class="tumbnail" style="width:120px; height:100px" />
+            </td>
+                <td>
+                    @if (item.IsActive)
+                    {
+                        <span class="text-success">
+                            <i class="fas fa-check-circle"></i> نشط
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">
+                            <i class="fas fa-times-circle"></i> محظور
+                        </span>
+                    }
+
+                </td>
+
+            <td>
+                    @switch (item.UserType)
+                    {
+                        case enUserType.Admin:
+                            <span class="text-primary">مشرف</span>
+                            break;
+                        case enUserType.Teacher:
+                            <span class="text-info">معلم</span>
+                            break;
+                        case enUserType.Student:
+                            <span class="text-success">طالب</span>
+                            break;
+                    }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+      @*       <td>
+                @Html.DisplayFor(modelItem => item.NormalizedUserName)
+            </td> *@
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+           @*  <td>
+                @Html.DisplayFor(modelItem => item.NormalizedEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmailConfirmed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PasswordHash)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SecurityStamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ConcurrencyStamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumberConfirmed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TwoFactorEnabled)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LockoutEnd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LockoutEnabled)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccessFailedCount)
+            </td> *@
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
