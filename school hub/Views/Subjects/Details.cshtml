@@ -11,19 +11,68 @@
 
 
 <div class="container">
-    @foreach (var unit in Model.Units)
-    {
-        <div class="card mb-3">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <h5 class="card-title m-0">@unit.Name</h5>
-
-                <a asp-controller="Units" asp-action="Details" asp-route-id="@unit.UnitId" class="btn btn-primary">
-                    ذهاب إلى الوحدة
-                </a>
-                </div>
+   @foreach (var unit in Model.Units)
+{
+    var dropdownId = $"dropdown_{unit.UnitId}";
+    var listId = $"list_{unit.UnitId}";
+    <div class="card mb-3">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <h5 class="card-title m-0">@unit.Name</h5>
+            
+            <div class="dropdown" id="@dropdownId">
+                <div class="dropdown-toggle" onclick="toggleDropdown('@dropdownId', '@listId', @unit.UnitId)">-- اختر درسًا --</div>
+                <ul class="dropdown-menu" id="@listId">
+                    <!-- سيتم ملء القائمة بالدروس الخاصة بهذه الوحدة -->
+                </ul>
             </div>
-        
-         
-
-    }
+        </div>
+    </div>
+}
 </div>
+
+<script>
+    const loadedUnits = new Set();
+
+    function toggleDropdown(dropdownId, listId, unitId) {
+        const dropdown = document.getElementById(dropdownId);
+        const dropdownList = document.getElementById(listId);
+        const dropdownToggle = dropdown.querySelector('.dropdown-toggle');
+
+        dropdown.classList.toggle('open');
+
+        if (!loadedUnits.has(unitId)) {
+            fetch(`/Lessons/GetUnitLessons/${unitId}`)
+                .then(res => res.json())
+                .then(data => {
+                    dropdownList.innerHTML = '';
+                    data.forEach(lesson => {
+                        const li = document.createElement('li');
+                        li.textContent = `${lesson.lessonNo} - ${lesson.title}`;
+                        li.dataset.lessonId = lesson.lessonId;
+
+                        li.onclick = () => {
+                            dropdownToggle.textContent = li.textContent;
+                            dropdown.classList.remove('open');
+                            console.log("تم اختيار الدرس:", lesson);
+                        };
+
+                        dropdownList.appendChild(li);
+                    });
+
+                    loadedUnits.add(unitId);
+                })
+                .catch(err => {
+                    console.error("فشل تحميل الدروس:", err);
+                });
+        }
+    }
+
+    // إغلاق أي قائمة عند النقر خارجها
+    document.addEventListener('click', function (event) {
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            if (!dropdown.contains(event.target)) {
+                dropdown.classList.remove('open');
+            }
+        });
+    });
+</script>

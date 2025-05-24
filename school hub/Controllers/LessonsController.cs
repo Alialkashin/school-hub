@@ -12,6 +12,7 @@ namespace school_hub.Controllers
         {
             _context = context;
         }
+
         [HttpGet]
         public IActionResult GetUnitLessons(short unitId)
         {

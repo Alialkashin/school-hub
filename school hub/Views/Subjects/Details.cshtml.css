@@ -1,0 +1,41 @@
+        .dropdown {
+            position: relative;
+            width: 250px;
+            user-select: none;
+        }
+
+        .dropdown-toggle {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            width: 100%;
+            margin-top: 5px;
+            list-style: none;
+            padding: 0;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .dropdown-menu li {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .dropdown-menu li:hover {
+            background-color: #eee;
+        }
+
+        .dropdown.open .dropdown-menu {
+            display: block;
+        }
