@@ -1,0 +1,22 @@
+﻿@model List<LibrarySection>
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">أقسام المكتبة</h2>
+    <div class="row">
+        @foreach (var p in Model)
+        {
+           <a  asp-action="GetSectionBooks" asp-controller="Libaray" asp-route-id="@p.SectionId" >
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <img src="@p.ImagePath" class="card-img-top" alt="صورة القسم" />
+                    <div class="card-body">
+                        <h5 class="card-title">@p.Name</h5>
+                        <p class="card-text">section.Description</p>
+                           
+                    </div>
+                </div>
+            </div>
+            </a>
+        }
+    </div>
+</div>

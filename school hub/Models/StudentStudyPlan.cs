@@ -20,7 +20,6 @@ namespace school_hub.Models
         [DisplayName("حالة الدفع")]
         public enPaymentStatus PaymentStatus { get; set; }
 
-
     }
 public enum enPaymentStatus
 {

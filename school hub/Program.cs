@@ -10,6 +10,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
 
+
 builder.Services.AddIdentity<User, IdentityRole<int>>()
 .AddDefaultTokenProviders()
 .AddEntityFrameworkStores<AppDBContext>();
@@ -25,15 +26,6 @@ using (var scope = app.Services.CreateScope())
     AppDBContext context = scope.ServiceProvider.GetRequiredService<AppDBContext>();
     DbInitializer.Seed(context);
 }
-app.MapControllerRoute(
-    name: "areas",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-);
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
 
 
 // Configure the HTTP request pipeline.

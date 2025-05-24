@@ -20,16 +20,26 @@ html {
 body {
   margin-bottom: 60px;
 }
+<<<<<<< HEAD
 
 .admin-container {
     display: flex;
     flex-direction: row;
+=======
+.admin-container {
+    display: flex;
+    flex-direction: row-reverse; /* ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+>>>>>>> 10ada26102c4a77c88de084d31a607f9cdc7d0c4
     min-height: 100vh;
 }
 
 .admin-sidebar {
     width: 250px;
+<<<<<<< HEAD
     background-color: #343a40; /* ÎáÝíÉ ÓæÏÇÁ */
+=======
+    background-color: #000; /* ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ */
+>>>>>>> 10ada26102c4a77c88de084d31a607f9cdc7d0c4
     color: #fff;
     padding: 20px;
     min-height: 100vh;
@@ -70,6 +80,7 @@ body {
     padding: 30px;
     background-color: #f8f9fa;
 }
+<<<<<<< HEAD
 
 .navbar-custom {
     background-color: #cce5ff; /* ÃÒÑÞ ÝÇÊÍ */
@@ -110,3 +121,5 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+=======
+>>>>>>> 10ada26102c4a77c88de084d31a607f9cdc7d0c4
