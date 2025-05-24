@@ -10,7 +10,6 @@ namespace school_hub.Models
         public Student Student { get; set; }
         public enPaymentStatus PaymentStatus { get; set; }
 
-
     }
 public enum enPaymentStatus
 {

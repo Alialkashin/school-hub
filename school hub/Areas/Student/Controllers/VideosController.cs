@@ -10,7 +10,7 @@ namespace school_hub.Controllers
         {
             _context = context;
         }
-
+        
         public IActionResult Index(int LessonId)
         {
             throw new NotImplementedException();

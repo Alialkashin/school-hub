@@ -26,8 +26,16 @@ namespace school_hub.Controllers
                 return NotFound();
             }
             return View(librarySection);
-            
         }
+        public IActionResult ShowBook(int bookId)
+        {
+            Book? book = _context.Books.FirstOrDefault(b => b.BookId == bookId);
+            if (book == null)
+            {
+                return NotFound();
+            }
 
+            return View(bookId);
+        }
     }
 }
