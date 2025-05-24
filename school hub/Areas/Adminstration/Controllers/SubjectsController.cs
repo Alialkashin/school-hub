@@ -120,7 +120,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 }
 
                 // إعادة تعبئة القائمة عند الخطأ
-              c
+              
 
                 model.Teacher = _context.Users
                     .Where(u => u.UserType == enUserType.Teacher)
