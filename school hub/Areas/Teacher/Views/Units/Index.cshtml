@@ -1,0 +1,126 @@
+@using school_hub.Models
+@model IEnumerable<Unit>
+@{
+    ViewData["Title"] = "قائمة الوحدات";
+}
+
+<!-- عرض قائمة الوحدات في جدول -->
+<div class="container mt-5">
+    <h1 class="text-center mb-4">قائمة الوحدات</h1>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>اسم الوحدة</th>
+                <th>الوصف</th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (var unit in Model)
+            {
+                <tr data-unitid="@unit.UnitId">
+                    <td>@unit.Name</td>
+                    <td>@unit.Description</td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-delete" data-unitid="@unit.UnitId">حذف</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- صندوق التأكيد المنبثق (Modal) للحذف -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">تأكيد الحذف</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="إغلاق">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- سيتم تحميل بيانات الوحدة هنا -->
+                <p id="unitDetails"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">حذف</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- منطقة عرض الإشعارات -->
+<div id="alertArea" style="position: fixed; top: 20px; right: 20px; z-index: 1050;"></div>
+
+@section Scripts {
+    <!-- تضمين jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <!-- تضمين Bootstrap JS (يُفضل استخدام النسخة التي تتوافق مع Bootstrap 4 أو 5 حسب مشروعك) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var currentUnitId = 0;
+            // عند الضغط على زر الحذف لكل وحدة
+            $('.btn-delete').click(function () {
+                currentUnitId = $(this).data('unitid');
+                // إرسال طلب AJAX لجلب بيانات الوحدة عبر Action "Delete"
+                $.ajax({
+                    url: '@Url.Action("Delete", "Units")',
+                    data: { unitId: currentUnitId },
+                    type: 'GET',
+                    success: function (data) {
+                        // نفترض أن الكائن المسترجع يحتوي على خصائص (Name, Description)
+                        var details = "<strong>اسم الوحدة:</strong> " + data.name + "<br />" +
+                                      "<strong>الوصف:</strong> " + data.description;
+                        $('#unitDetails').html(details);
+                        $('#deleteModal').modal('show');
+                    },
+                    error: function () {
+                        showAlert('خطأ في جلب بيانات الوحدة', 'danger');
+                    }
+                });
+            });
+
+            // عند الضغط على زر تأكيد الحذف في الصندوق
+            $('#confirmDeleteBtn').click(function () {
+                $.ajax({
+                    url: '@Url.Action("DeleteConfirmed", "Units")',
+                    data: { unitId: currentUnitId },
+                    type: 'POST',
+                    success: function (response) {
+                        // نتوقع الاستجابة "done" عند النجاح
+                        if (response === "done") {
+                            showAlert('تم حذف الوحدة بنجاح', 'success');
+                            // إزالة الصف الخاص بالوحدة المحذوفة من الجدول
+                            $('tr[data-unitid="' + currentUnitId + '"]').remove();
+                        } else {
+                            showAlert('فشل في حذف الوحدة', 'danger');
+                        }
+                        $('#deleteModal').modal('hide');
+                    },
+                    error: function () {
+                        showAlert('حدث خطأ أثناء عملية الحذف', 'danger');
+                        $('#deleteModal').modal('hide');
+                    }
+                });
+            });
+
+            // دالة لعرض إشعار (notification)
+            function showAlert(message, type) {
+                var alertHtml = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' +
+                                    message +
+                                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                        '<span aria-hidden="true">&times;</span>' +
+                                    '</button>' +
+                                '</div>';
+                $('#alertArea').append(alertHtml);
+                // إزالة الإشعار بعد 3 ثوانٍ
+                setTimeout(function () {
+                    $('#alertArea .alert').first().alert('close');
+                }, 3000);
+            }
+        });
+    </script>
+}

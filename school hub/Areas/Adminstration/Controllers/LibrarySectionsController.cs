@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using NuGet.Packaging;
 using school_hub.Areas.Adminstration.ViewModels;
+using school_hub.ViewModels;
 using school_hub.Data;
 using school_hub.Models;
 using static System.Net.Mime.MediaTypeNames;
@@ -51,28 +53,9 @@ namespace school_hub.Areas.Adminstration.Controllers
         // GET: Adminstration/LibrarySections/Create
         public IActionResult Create()
         {
-
-
-
-            var model = new InputBookViewModel();
-
-            // جلب الأقسام من النوع LibrarySection فقط
-            var librarySections = _context.Sections
-                .OfType<LibrarySection>()
-                .Select(s => new SelectListItem
-                {
-                    Value = s.SectionId.ToString(),
-                    Text = s.Name
-                }).ToList();
-
-            model.LibrarySection = librarySections;
-
+            InputLibrarySectionViewModel model = new InputLibrarySectionViewModel();
+            model.Books = new List<InputBookViewModel>();
             return View(model);
-
-
-
-
-
         }
 
 
@@ -80,19 +63,7 @@ namespace school_hub.Areas.Adminstration.Controllers
         
 
 
-        public List<SelectListItem> GetSectionTypeSelectList()
-    {
-        var enumType = typeof(enSectionType);
-        var values = Enum.GetValues(enumType).Cast<enSectionType>();
-
-        var items = values.Select(e => new SelectListItem
-        {
-            Value = ((int)e).ToString(),
-            Text = e.GetDisplayName() // تستخدم امتدادك الخاص هنا
-        }).ToList();
-
-        return items;
-    }
+    
 
 
         // POST: Adminstration/LibrarySections/Create
@@ -100,11 +71,11 @@ namespace school_hub.Areas.Adminstration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(InputBookViewModel model)
+        public async Task<IActionResult> Create(InputDisplayInfoViewModel model)
         {
             if (ModelState.IsValid)
             {
-               Book book=new Book();
+                LibrarySection librarySection = new LibrarySection();
                 if (model.File != null && model.File.Length > 0)
                 {
 
@@ -118,15 +89,15 @@ namespace school_hub.Areas.Adminstration.Controllers
                         await model.File.CopyToAsync(fileStream);
                     }
 
-                    book.BookPath = "/images/library/" + uniqueFileName;
+                    librarySection.ImagePath = "/images/library/" + uniqueFileName;
                 }
-                book.Title = model.Name;
-                book.Description = model.Description;
-                book.LibrarySectionId = model.LibrarySectionId;
+                librarySection.Name = model.Name;
+                librarySection.Description = model.Description;
+                
 
 
 
-                _context.Books.Add(book);
+                _context.Sections.Add(librarySection);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

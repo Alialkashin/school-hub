@@ -2,42 +2,34 @@
 
 @{
     ViewData["Title"] = "Details";
- 
 }
 
-<h1>Details</h1>
+<h1>تفاصيل القسم</h1>
+
+<div class="mb-4">
+    <h4>@Model.Name</h4>
+    <hr />
+    <div class="row mb-2">
+        <label class="col-sm-2 fw-bold">الاسم:</label>
+        <div class="col-sm-10">
+            <span>@Model.Name</span>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <label class="col-sm-2 fw-bold">الوصف:</label>
+        <div class="col-sm-10">
+            <span>@Model.Description</span>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <label class="col-sm-2 fw-bold">الصورة:</label>
+        <div class="col-sm-10">
+            <img src="@Model.ImagePath" class="img-thumbnail" style="width: 120px; height: 100px;" />
+        </div>
+    </div>
+</div>
 
 <div>
-    <h4>LibrarySection</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SectionType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SectionType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImagePath)
-        </dt>
-        <dd class = "col-sm-10">
-            <img src="@Html.DisplayFor(model => model.ImagePath)" class="tumbnail" style="width:120px; height:100px" />
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.SectionId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.SectionId" class="btn btn-primary">تعديل</a>
+    <a asp-action="Index" class="btn btn-secondary ms-2">عودة إلى القائمة</a>
 </div>

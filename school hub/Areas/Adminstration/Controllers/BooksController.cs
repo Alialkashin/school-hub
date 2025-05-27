@@ -13,17 +13,18 @@ using school_hub.Models;
 
 namespace school_hub.Areas.Adminstration.Controllers
 {
-   
+
     [Area("Adminstration")]
     public class BooksController : Controller
     {
         private readonly AppDBContext _context;
- private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         public BooksController(AppDBContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _hostingEnvironment = hostingEnvironment;
         }
+        /*
 
         // GET: Adminstration/Books
         public async Task<IActionResult> Index()
@@ -56,7 +57,7 @@ namespace school_hub.Areas.Adminstration.Controllers
         {
 
 
-            InputBookViewModel input =new InputBookViewModel();
+            InputBookViewModel input = new InputBookViewModel();
             // جلب الأقسام التي نوعها LibrarySection فقط
             var librarySections = _context.Sections
       .OfType<LibrarySection>()
@@ -106,7 +107,6 @@ namespace school_hub.Areas.Adminstration.Controllers
 
                 book.Title = model.Name;
                 book.Description = model.Description;
-                book.LibrarySectionId = model.LibrarySectionId;
 
                 _context.Books.Add(book);
                 await _context.SaveChangesAsync();
@@ -119,7 +119,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 .Select(s => new { s.SectionId, s.Name })
                 .ToList();
 
-            ViewBag.LibrarySections = new SelectList(librarySections, "SectionId", "Name", model.LibrarySectionId);
+            ViewBag.LibrarySections = new SelectList(librarySections, "SectionId", "Name");
 
             return View(model);
         }
@@ -174,7 +174,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                                 System.IO.File.Delete(oldimagepath);
                             }
                         }
-                      book.BookPath= "/images/ccc/" + uniquefilename;
+                        book.BookPath = "/images/ccc/" + uniquefilename;
                     }
                     _context.Update(book);
                     await _context.SaveChangesAsync();
@@ -234,5 +234,7 @@ namespace school_hub.Areas.Adminstration.Controllers
         {
             return _context.Books.Any(e => e.BookId == id);
         }
+        */
+  
     }
 }
