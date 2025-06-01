@@ -2,6 +2,7 @@
 using school_hub.Models;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using school_hub.ViewModels;
 
 namespace school_hub.Areas.Adminstration.ViewModels
 {

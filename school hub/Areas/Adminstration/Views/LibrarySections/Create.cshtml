@@ -1,17 +1,18 @@
-﻿@model InputBookViewModel
+﻿@using school_hub.ViewModels
+@model InputDisplayInfoViewModel
 
 @{
     ViewData["Title"] = "Create";
-
 }
 
-<h1>Create</h1>
+<h1>إضافة قسم جديد</h1>
 
-<h4>LibrarySection</h4>
+<h4>المكتبة</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-8">
         <form asp-action="Create" method="post" enctype="multipart/form-data">
+<<<<<<< HEAD
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
           @*   <div class="form-group">
                 <label asp-for="LibrarySectionId" class="control-label"></label>
@@ -20,33 +21,38 @@
                 <span asp-validation-for="LibrarySectionId" class="text-danger"></span>
             </div> *@
 
+=======
+>>>>>>> cf82e574bd4ebc3980ef8be48e5227d42cd6f033
 
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="File" class="control-label"></label>
                 <input asp-for="File" class="form-control" type="file" />
                 <span asp-validation-for="File" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
         </form>
-    </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+            <hr />
+            @*<h5>إضافة كتب (اختياري)</h5>
+            <div id="books-container">
+                @for (int i = 0; i < Model.Books.Count; i++)
+                {
+                    ViewData["Index"] = i;
+                    @await Html.PartialAsync("_BookInputPartial", Model.Books[i])
+                }
+            </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+            <button type="button" class="btn btn-secondary mb-3" onclick="addBook()">إضافة كتاب آخر</button>
+*@
+ 

@@ -13,17 +13,18 @@ using school_hub.Models;
 
 namespace school_hub.Areas.Adminstration.Controllers
 {
-   
+
     [Area("Adminstration")]
     public class BooksController : Controller
     {
         private readonly AppDBContext _context;
- private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         public BooksController(AppDBContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _hostingEnvironment = hostingEnvironment;
         }
+        /*
 
         // GET: Adminstration/Books
         public async Task<IActionResult> Index()
@@ -55,6 +56,7 @@ namespace school_hub.Areas.Adminstration.Controllers
         public IActionResult Create()
         {
 
+<<<<<<< HEAD
             InputBookViewModel model = new InputBookViewModel();
             model.LibrarySectionItems = _context.Set<LibrarySection>()
                   .Select(s => new SelectListItem
@@ -64,6 +66,20 @@ namespace school_hub.Areas.Adminstration.Controllers
                   })
              .ToList();
             return View(model);
+=======
+
+            InputBookViewModel input = new InputBookViewModel();
+            // جلب الأقسام التي نوعها LibrarySection فقط
+            var librarySections = _context.Sections
+      .OfType<LibrarySection>()
+      .Select(s => new { s.SectionId, s.Name })
+      .ToList();
+
+            ViewBag.LibrarySections = new SelectList(librarySections, "SectionId", "Name");
+
+
+            return View();
+>>>>>>> cf82e574bd4ebc3980ef8be48e5227d42cd6f033
         }
 
 
@@ -97,7 +113,6 @@ namespace school_hub.Areas.Adminstration.Controllers
                 }
                 book.Title = model.Name;
                 book.Description = model.Description;
-                book.LibrarySectionId = model.LibrarySectionId;
 
 
                 _context.Books.Add(book);
@@ -106,6 +121,10 @@ namespace school_hub.Areas.Adminstration.Controllers
             }
 
 
+<<<<<<< HEAD
+=======
+            ViewBag.LibrarySections = new SelectList(librarySections, "SectionId", "Name");
+>>>>>>> cf82e574bd4ebc3980ef8be48e5227d42cd6f033
 
             return View(model);
         }
@@ -174,7 +193,26 @@ namespace school_hub.Areas.Adminstration.Controllers
                     Directory.CreateDirectory(uploadsFolder);
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
+<<<<<<< HEAD
                         await model.File.CopyToAsync(fileStream);
+=======
+                        var uploadsfolder = Path.Combine(_hostingEnvironment.WebRootPath, "images/ccc");
+                        var uniquefilename = Guid.NewGuid().ToString() + "_" + imagefile.FileName;
+                        var filepath = Path.Combine(uploadsfolder, uniquefilename);
+                        using (var filestream = new FileStream(filepath, FileMode.Create))
+                        {
+                            await imagefile.CopyToAsync(filestream);
+                        }
+                        if (!string.IsNullOrEmpty(book.BookPath))
+                        {
+                            var oldimagepath = Path.Combine(_hostingEnvironment.WebRootPath, book.Description.TrimStart('/'));
+                            if (System.IO.File.Exists(oldimagepath))
+                            {
+                                System.IO.File.Delete(oldimagepath);
+                            }
+                        }
+                        book.BookPath = "/images/ccc/" + uniquefilename;
+>>>>>>> cf82e574bd4ebc3980ef8be48e5227d42cd6f033
                     }
 
                     if (!string.IsNullOrEmpty(book.BookPath))
@@ -251,5 +289,7 @@ namespace school_hub.Areas.Adminstration.Controllers
         {
             return _context.Books.Any(e => e.BookId == id);
         }
+        */
+  
     }
 }

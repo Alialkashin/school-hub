@@ -10,13 +10,13 @@ namespace school_hub.Models
         public short UnitId { get; set; }
 
         [DisplayName("الدروس")]
-        public ICollection<Lesson> Lessons { get; set; }
+        public ICollection<Lesson>? Lessons { get; set; }
 
         [DisplayName("معرف المادة")]
         public short SubjectId { get; set; }
 
         [DisplayName("المادة")]
-        public Subject Subject { get; set; }
+        public Subject? Subject { get; set; }
     }
 
 }

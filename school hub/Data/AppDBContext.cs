@@ -15,7 +15,7 @@ namespace school_hub.Data
 	{
 		public AppDBContext(DbContextOptions options) : base(options)
 		{
-			
+
 		}
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
@@ -93,8 +93,8 @@ namespace school_hub.Data
 
 			modelBuilder.Entity<Subject>()
 			.HasOne(s => s.Teacher)
-			.WithMany(t => t.Subjects)
-			.HasForeignKey(s => s.TeacherId)
+			.WithOne(t => t.Subject)
+			.HasForeignKey<Subject>(s => s.TeacherId)
 			.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<Unit>()

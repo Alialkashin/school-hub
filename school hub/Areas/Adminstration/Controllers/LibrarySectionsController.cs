@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using NuGet.Packaging;
 using school_hub.Areas.Adminstration.ViewModels;
+using school_hub.ViewModels;
 using school_hub.Data;
 using school_hub.Models;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace school_hub.Areas.Adminstration.Controllers
 {
@@ -54,26 +55,13 @@ namespace school_hub.Areas.Adminstration.Controllers
 
             return View();
 
+
         }
 
 
 
         
 
-
-    //    public List<SelectListItem> GetSectionTypeSelectList()
-    //{
-    //    var enumType = typeof(enSectionType);
-    //    var values = Enum.GetValues(enumType).Cast<enSectionType>();
-
-    //    var items = values.Select(e => new SelectListItem
-    //    {
-    //        Value = ((int)e).ToString(),
-    //        Text = e.GetDisplayName() // تستخدم امتدادك الخاص هنا
-    //    }).ToList();
-
-    //    return items;
-    //}
 
 
         // POST: Adminstration/LibrarySections/Create
@@ -86,6 +74,7 @@ namespace school_hub.Areas.Adminstration.Controllers
             if (ModelState.IsValid)
             {
                LibrarySection library=new LibrarySection();
+
                 if (model.File != null && model.File.Length > 0)
                 {
 
@@ -108,6 +97,7 @@ namespace school_hub.Areas.Adminstration.Controllers
 
 
                 _context.Add(library);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

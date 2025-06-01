@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
+using school_hub.ViewModels;
 namespace school_hub.Areas.Adminstration.ViewModels
 {
     public class InputStudyPlansViewModel:InputDisplayInfoViewModel
