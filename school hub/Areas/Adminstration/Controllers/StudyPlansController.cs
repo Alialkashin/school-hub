@@ -9,6 +9,7 @@ using school_hub.Areas.Adminstration.ViewModels;
 using school_hub.Data;
 using school_hub.Models;
 
+
 namespace school_hub.Areas.Adminstration.Controllers
 {
     [Area("Adminstration")]
@@ -53,14 +54,16 @@ namespace school_hub.Areas.Adminstration.Controllers
         public IActionResult Create()
         {
             InputStudyPlansViewModel model = new InputStudyPlansViewModel();
-          model.StudySection=_context.StudyPlans
-                .Select(s => new SelectListItem
-          {
-              Value = s.StudySectionId.ToString(),
-              Text = s.Name
-          })
-            .ToList();
+            model.StudySectionItems = _context.Set<StudySection>()
+                  .Select(s => new SelectListItem
+                  {
+                      Value = s.SectionId.ToString(),
+                      Text = s.Name
+                  })
+             .ToList();
             return View(model);
+
+
         }
 
         // POST: Adminstration/StudyPlans/Create
@@ -71,7 +74,8 @@ namespace school_hub.Areas.Adminstration.Controllers
         public async Task<IActionResult> Create(InputStudyPlansViewModel model)
         {
             if (ModelState.IsValid)
-            {   StudyPlan studyPlan=new StudyPlan();
+            {  
+                StudyPlan studyPlan=new StudyPlan();
                 if (model.File != null && model.File.Length > 0)
                 {
                     var uploadsFolder = Path.Combine(_hostingEnvironmentstudyplans.WebRootPath, "images/studyplans/");
@@ -89,6 +93,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 studyPlan.Name= model.Name;
                 studyPlan.Description= model.Description;
                 studyPlan.StudySectionId = model.StudySectionId;
+              
 
                 _context.StudyPlans.Add(studyPlan);
                 await _context.SaveChangesAsync();
@@ -102,18 +107,27 @@ namespace school_hub.Areas.Adminstration.Controllers
         // GET: Adminstration/StudyPlans/Edit/5
         public async Task<IActionResult> Edit(short? id)
         {
+            var study = await _context.StudyPlans.FindAsync(id);
             if (id == null)
             {
                 return NotFound();
             }
 
-            var studyPlan = await _context.StudyPlans.FindAsync(id);
-            if (studyPlan == null)
+            var model = new InputStudyPlansViewModel
             {
-                return NotFound();
-            }
-            ViewData["StudySectionId"] = new SelectList(_context.Set<StudySection>(), "SectionId", "SectionId", studyPlan.StudySectionId);
-            return View(studyPlan);
+                Id = study.StudyPlanId,
+                Name = study.Name,
+                Description = study.Description,
+                StudySectionId = study.StudySectionId,
+                ExistingImagePath = study.ImagePath,
+                StudySectionItems = _context.Set<StudySection>()
+                       .Select(s => new SelectListItem
+                       {
+                           Value = s.SectionId.ToString(),
+                           Text = s.Name
+                       }).ToList()
+            };
+            return View(model);
         }
 
         // POST: Adminstration/StudyPlans/Edit/5
@@ -121,35 +135,78 @@ namespace school_hub.Areas.Adminstration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(short id, [Bind("StudyPlanId,StudySectionId,Name,Description,ImagePath")] StudyPlan studyPlan)
+        public async Task<IActionResult> Edit(short id, InputStudyPlansViewModel model)
         {
-            if (id != studyPlan.StudyPlanId)
+            if (id != model.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(studyPlan);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StudyPlanExists(studyPlan.StudyPlanId))
+                model.StudySectionItems = _context.Set<StudySection>()
+                    .Select(s => new SelectListItem
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                        Value = s.SectionId.ToString(),
+                        Text = s.Name
+                    }).ToList();
+                return View(model);
             }
-            ViewData["StudySectionId"] = new SelectList(_context.Set<StudySection>(), "SectionId", "SectionId", studyPlan.StudySectionId);
-            return View(studyPlan);
+
+            var study = await _context.StudyPlans.FindAsync(id);
+            if (study == null) { return NotFound(); }
+
+
+            try
+            {
+                if (model.File != null && model.File.Length > 0)
+                {
+                    var uploadsfolder = Path.Combine(_hostingEnvironmentstudyplans.WebRootPath, "images/studyplans/");
+                    var uniquefilename = Guid.NewGuid().ToString() + "_" + model.File.FileName;
+                    var filepath = Path.Combine(uploadsfolder, uniquefilename);
+                    Directory.CreateDirectory(uploadsfolder);
+                    using (var filestream = new FileStream(filepath, FileMode.Create))
+                    {
+                        await model.File.CopyToAsync(filestream);
+                    }
+                    if (!string.IsNullOrEmpty(study.ImagePath))
+                    {
+                        var oldimagefile = Path.Combine(_hostingEnvironmentstudyplans.WebRootPath, study.ImagePath.TrimStart('/'));
+
+                        if (System.IO.File.Exists(oldimagefile))
+                        {
+                            System.IO.File.Delete(oldimagefile);
+                        }
+                    }
+                    study.ImagePath = "/images/studyplans/" + uniquefilename;
+                }
+                else
+                {
+              
+                    study.ImagePath = model.ExistingImagePath;
+                }
+
+                study.Name = model.Name;
+                study.Description = model.Description;
+                study.StudySectionId = model.StudySectionId;
+
+
+                _context.Update(study);
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateConcurrencyException)
+            {
+                if(!StudyPlanExists(study.StudyPlanId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Adminstration/StudyPlans/Delete/5

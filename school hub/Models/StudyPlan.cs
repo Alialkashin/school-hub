@@ -8,7 +8,7 @@ namespace school_hub.Models
 
  
        
-        [DisplayName("معرف الخطة")]
+      
         public short StudyPlanId { get; set; }
 
         [DisplayName("معرف القسم الدراسي")]

@@ -1,11 +1,11 @@
 ﻿@model school_hub.Models.Book
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "تفاصيل كتاب";
    
 }
 
-<h1>Details</h1>
+<h1>@ViewData["Title"]</h1>
 
 <div>
     <h4>Book</h4>
@@ -40,5 +40,5 @@
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.BookId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">العودة الى القائمة</a>
 </div>

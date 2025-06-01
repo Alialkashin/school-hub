@@ -16,11 +16,13 @@ namespace school_hub.Areas.Adminstration.Controllers
     {
         private readonly AppDBContext _context;
         private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly UserManager<User> _userManager;
 
-        public UsersController(AppDBContext context, IWebHostEnvironment hostingEnvironment)
+        public UsersController(AppDBContext context, IWebHostEnvironment hostingEnvironment, UserManager<User> userManager)
         {
             _context = context;
             _hostingEnvironment = hostingEnvironment;
+            _userManager = userManager;
         }
 
         // GET: Adminstration/Users

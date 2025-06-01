@@ -1,18 +1,21 @@
 ﻿@model IEnumerable<school_hub.Models.Book>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "كتب المنصة";
 
 }
 
-<h1>Index</h1>
+<h1>@ViewData["Title"]</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">اضافة كتاب جديد</a>
 </p>
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.LibrarySection)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
@@ -31,6 +34,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LibrarySection.Name)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
@@ -44,10 +50,11 @@
                 @Html.DisplayFor(modelItem => item.LibrarySection.SectionId)
             </td> *@
             <td>
-                <a asp-action="Edit" asp-route-id="@item.BookId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BookId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BookId">Delete</a>
-            </td>
+                
+                    <a class="btn-info" asp-action="Edit" asp-route-id="@item.BookId" style="text-decoration:none">Edit </a> 
+                    <a asp-action="Details" asp-route-id="@item.BookId" class="btn-dark" style="text-decoration:none">Details </a>  
+                    <a asp-action="Delete" asp-route-id="@item.BookId" class="btn-danger" style="text-decoration:none">Delete</a> 
+            </td> 
         </tr>
 }
     </tbody>

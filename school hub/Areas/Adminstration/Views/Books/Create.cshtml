@@ -1,19 +1,28 @@
 ﻿@model InputBookViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "اضافة";
 
 }
 
-<h1>Create</h1>
+<h1>@ViewData["Title"]</h1>
 
-<h4>Book</h4>
+<h4>كتاب</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<<<<<<< HEAD
+            <div class="form-group">
+                <label asp-for="LibrarySectionId" class="control-label"></label>
+                <select asp-for="LibrarySectionId" class="form-control" asp-items=" Model.LibrarySectionItems"></select>
+
+                <span asp-validation-for="LibrarySectionId" class="text-danger"></span>
+            </div>
+=======
             <
+>>>>>>> cf82e574bd4ebc3980ef8be48e5227d42cd6f033
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -37,7 +46,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">العودة الى القائمة </a>
 </div>
 
 @section Scripts {

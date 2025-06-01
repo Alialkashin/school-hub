@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<school_hub.Models.StudyPlan>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "الخطط الدارسية";
 
 }
 
@@ -32,7 +32,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.StudySection.SectionId)
+                    @Html.DisplayFor(modelItem => item.StudySection.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)

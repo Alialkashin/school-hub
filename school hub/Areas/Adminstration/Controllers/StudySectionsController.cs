@@ -61,12 +61,13 @@ namespace school_hub.Areas.Adminstration.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(InputDisplayInfoViewModel vmstudySection)
         {
-             StudySection studySection = new StudySection();
+             
             if (ModelState.IsValid)
             {
+                StudySection studySection = new StudySection();
                 if (vmstudySection.File != null && vmstudySection.File.Length > 0)
                 {
-                    var uploadsFolder = Path.Combine(_hostingEnvironmentstudysection.WebRootPath, "images/StudySections/");
+                    var uploadsFolder = Path.Combine(_hostingEnvironmentstudysection.WebRootPath, "images/studySections/");
                     var uniqueFileName = Guid.NewGuid().ToString() + "_" + vmstudySection.File.FileName;
                     var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
@@ -76,11 +77,13 @@ namespace school_hub.Areas.Adminstration.Controllers
                         await vmstudySection.File.CopyToAsync(fileStream);
                     }
 
-                    studySection.ImagePath = "/images/StudySections/" + uniqueFileName;
+                    studySection.ImagePath = "/images/studySections/" + uniqueFileName;
                 }
                 studySection.Name = vmstudySection.Name;
                 studySection.Description = vmstudySection.Description;
-                studySection.SectionType = enSectionType.StudySection;
+            
+
+
                 _context.Sections.Add(studySection);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
