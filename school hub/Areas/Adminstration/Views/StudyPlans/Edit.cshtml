@@ -1,4 +1,4 @@
-﻿@model school_hub.Models.StudyPlan
+﻿@model InputStudyPlansViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -11,12 +11,15 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit" enctype="multipart/form-data">
+        <form asp-action="Edit" enctype="multipart/form-data" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="StudyPlanId" />
+            <input type="hidden" asp-for="ExistingImagePath" />
+
             <div class="form-group">
                 <label asp-for="StudySectionId" class="control-label"></label>
-                <select asp-for="StudySectionId" class="form-control" asp-items="ViewBag.StudySectionId"></select>
+                <select asp-for="StudySectionId" class="form-control" asp-items="Model.StudySectionItems">
+                  
+                </select>
                 <span asp-validation-for="StudySectionId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -29,10 +32,20 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ImagePath" class="control-label"></label>
-                <input asp-for="ImagePath" class="form-control" type="file" />
-                <span asp-validation-for="ImagePath" class="text-danger"></span>
+            @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
+            {
+                <div class="form-group" style="margin-bottom:20px">
+                    <label>Current Image</label><br />
+                    <img src="@Model.ExistingImagePath" class="img-thumbnail" style="width:220px; height:200px" />
+                </div>
+            }
+            <div class="form-group " style="margin-bottom:20px">
+                <button type="button" class="btn btn-warning" onclick="showFileInput()">تغيير الصورة</button>
+            </div>
+            <div class="form-group " id="fileInputDiv" style="display:none; margin-bottom:20px">
+                <label asp-for="File" class="control-label">اختر صورة جديدة</label>
+                <input asp-for="File" class="form-control" type="file" />
+                <span asp-validation-for="File" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -46,5 +59,12 @@
 </div>
 
 @section Scripts {
+
+    <script>
+        function showFileInput() {
+            document.getElementById('fileInputDiv').style.display = 'block';
+        }
+    </script>
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

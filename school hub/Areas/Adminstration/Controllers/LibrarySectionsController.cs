@@ -52,26 +52,7 @@ namespace school_hub.Areas.Adminstration.Controllers
         public IActionResult Create()
         {
 
-
-
-            var model = new InputBookViewModel();
-
-            // جلب الأقسام من النوع LibrarySection فقط
-            var librarySections = _context.Sections
-                .OfType<LibrarySection>()
-                .Select(s => new SelectListItem
-                {
-                    Value = s.SectionId.ToString(),
-                    Text = s.Name
-                }).ToList();
-
-            model.LibrarySection = librarySections;
-
-            return View(model);
-
-
-
-
+            return View();
 
         }
 
@@ -80,19 +61,19 @@ namespace school_hub.Areas.Adminstration.Controllers
         
 
 
-        public List<SelectListItem> GetSectionTypeSelectList()
-    {
-        var enumType = typeof(enSectionType);
-        var values = Enum.GetValues(enumType).Cast<enSectionType>();
+    //    public List<SelectListItem> GetSectionTypeSelectList()
+    //{
+    //    var enumType = typeof(enSectionType);
+    //    var values = Enum.GetValues(enumType).Cast<enSectionType>();
 
-        var items = values.Select(e => new SelectListItem
-        {
-            Value = ((int)e).ToString(),
-            Text = e.GetDisplayName() // تستخدم امتدادك الخاص هنا
-        }).ToList();
+    //    var items = values.Select(e => new SelectListItem
+    //    {
+    //        Value = ((int)e).ToString(),
+    //        Text = e.GetDisplayName() // تستخدم امتدادك الخاص هنا
+    //    }).ToList();
 
-        return items;
-    }
+    //    return items;
+    //}
 
 
         // POST: Adminstration/LibrarySections/Create
@@ -100,11 +81,11 @@ namespace school_hub.Areas.Adminstration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(InputBookViewModel model)
+        public async Task<IActionResult> Create(InputLibraryViewModel model)
         {
             if (ModelState.IsValid)
             {
-               Book book=new Book();
+               LibrarySection library=new LibrarySection();
                 if (model.File != null && model.File.Length > 0)
                 {
 
@@ -118,15 +99,15 @@ namespace school_hub.Areas.Adminstration.Controllers
                         await model.File.CopyToAsync(fileStream);
                     }
 
-                    book.BookPath = "/images/library/" + uniqueFileName;
+                    library.ImagePath = "/images/library/" + uniqueFileName;
                 }
-                book.Title = model.Name;
-                book.Description = model.Description;
-                book.LibrarySectionId = model.LibrarySectionId;
+                library.Name = model.Name;
+                library.Description = model.Description;
 
 
 
-                _context.Books.Add(book);
+
+                _context.Add(library);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -150,7 +131,17 @@ namespace school_hub.Areas.Adminstration.Controllers
             {
                 return NotFound();
             }
-            return View(librarySection);
+
+            var viewModel = new InputLibraryViewModel
+            {
+                SectionId = librarySection.SectionId,
+                Name = librarySection.Name,
+                Description = librarySection.Description,
+                ExistingImagePath = librarySection.ImagePath 
+            };
+
+            return View(viewModel);
+     
         }
 
         // POST: Adminstration/LibrarySections/Edit/5
@@ -158,52 +149,67 @@ namespace school_hub.Areas.Adminstration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SectionId,SectionType,Name,Description,ImagePath")] LibrarySection librarySection)
+        public async Task<IActionResult> Edit(InputLibraryViewModel model)
         {
-            if (id != librarySection.SectionId)
+            if (!ModelState.IsValid)
+            { 
+                return View(model);
+            }
+
+            var library = await _context.Sections.OfType<LibrarySection>()
+                    .FirstOrDefaultAsync(s => s.SectionId == model.SectionId);
+            if (library == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (model.File != null && model.File.Length > 0)
                 {
-                    _context.Update(librarySection);
-                    await _context.SaveChangesAsync();
+                    var uploadsFolder = Path.Combine(_hostingEnvironmentlibary.WebRootPath, "images/library/");
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.File.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    Directory.CreateDirectory(uploadsFolder);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.File.CopyToAsync(fileStream);
+                    }
+
+                    if (!string.IsNullOrEmpty(library.ImagePath))
+                    {
+                        var oldImagePath = Path.Combine(_hostingEnvironmentlibary.WebRootPath, library.ImagePath.TrimStart('/'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                   library.ImagePath = "/images/library/" + uniqueFileName;
                 }
-                catch (DbUpdateConcurrencyException)
+
+
+                library.Name = model.Name;
+                library.Description = model.Description;
+               
+
+                _context.Update(library);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!LibrarySectionExists(library.SectionId))
                 {
-                    if (!LibrarySectionExists(librarySection.SectionId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
                 }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(librarySection);
-        }
-
-        // GET: Adminstration/LibrarySections/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
+                else
+                {
+                    throw;
+                }
             }
 
-            var librarySection = await _context.Sections
-                .FirstOrDefaultAsync(m => m.SectionId == id);
-            if (librarySection == null)
-            {
-                return NotFound();
-            }
-
-            return View(librarySection);
+            return RedirectToAction(nameof(Index));
         }
 
         // POST: Adminstration/LibrarySections/Delete/5

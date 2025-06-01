@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<school_hub.Models.Subject>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "المواد";
   
 }
 
@@ -41,10 +41,10 @@
                 @Html.DisplayFor(modelItem => item.TotalDuration)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Teacher.Id)
+                @Html.DisplayFor(modelItem => item.Teacher.UserName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.StudyPlan.StudyPlanId)
+                @Html.DisplayFor(modelItem => item.StudyPlan.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)

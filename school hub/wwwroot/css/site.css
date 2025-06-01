@@ -29,7 +29,7 @@ body {
 
 .admin-sidebar {
     width: 250px;
-    background-color: #343a40; /* ����� ����� */
+    background-color: #343a40; 
 
     color: #fff;
     padding: 20px;
@@ -104,6 +104,10 @@ body {
 .icon-red {
     color: crimson;
 }
+.icon-seagreen {
+    color: seagreen;
+}
+
 
 /*>>>>>>> 21ff8666a08437e19037bacaa39d9108e1e1a721*/
 .icon-gradient {

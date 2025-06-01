@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/school_hub.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/fontawesome-free-6.7.2-web/css/all.min.css" />
-
+    <link rel ="stylesheet" href="~/css/admincss.css" />
 </head>
 <body>
     <div class="admin-container">
@@ -19,28 +19,29 @@
             </div>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link" asp-controller="LibrarySections" asp-action="Index">
-                        <i class="fas fa-book icon-orange"></i>  <em>اقسام المكتبة</em>
+                    <a class="nav-link" asp-controller="Books" asp-action="Index">
+                        <i class="fas fa-book icon-seagreen"></i>    <em> كتب المنصة </em>
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" asp-controller="LibrarySections" asp-action="Index">
+                        <i class="fas fa-book icon-orange"></i>  <em>الاقسام المكتبية</em>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a class="nav-link" asp-controller="StudyPlans" asp-action="Index">
-                        <i class="fas fa-list-alt icon-blue"></i>  <em>خطط الدراسية</em>
+                        <i class="fas fa-list-alt icon-blue"></i>  <em>الخطط الدراسية</em>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="StudySections" asp-action="Index">
-                        <i class="fas fa-school icon-green"></i>  <em>اقسام الدراسية</em>
+                        <i class="fas fa-school icon-green"></i>  <em>الاقسام الدراسية</em>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="Subjects" asp-action="Index">
                         <i class="fas fa-clipboard-list icon-purple"></i>  <em>المواد</em>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Units" asp-action="Index">
-                        <i class="fas fa-puzzle-piece icon-red"></i>   <em>الواحدات</em>
                     </a>
                 </li>
                 <li class="nav-item">

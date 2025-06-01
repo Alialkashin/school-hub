@@ -55,18 +55,15 @@ namespace school_hub.Areas.Adminstration.Controllers
         public IActionResult Create()
         {
 
-
-            InputBookViewModel input =new InputBookViewModel();
-            // جلب الأقسام التي نوعها LibrarySection فقط
-            var librarySections = _context.Sections
-      .OfType<LibrarySection>()
-      .Select(s => new { s.SectionId, s.Name })
-      .ToList();
-
-            ViewBag.LibrarySections = new SelectList(librarySections, "SectionId", "Name");
-
-
-            return View();
+            InputBookViewModel model = new InputBookViewModel();
+            model.LibrarySectionItems = _context.Set<LibrarySection>()
+                  .Select(s => new SelectListItem
+                  {
+                      Value = s.SectionId.ToString(),
+                      Text = s.Name
+                  })
+             .ToList();
+            return View(model);
         }
 
 
@@ -84,42 +81,31 @@ namespace school_hub.Areas.Adminstration.Controllers
             if (ModelState.IsValid)
             {
                 Book book = new Book();
-
-               
                 if (model.File != null && model.File.Length > 0)
                 {
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.File.FileName;
                     var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images/books/");
-
-                    // تأكد من وجود مجلد الرفع
-                    if (!Directory.Exists(uploadsFolder))
-                        Directory.CreateDirectory(uploadsFolder);
-
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.File.FileName;
                     var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+
+                    Directory.CreateDirectory(uploadsFolder);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
-                        await model.File.CopyToAsync(stream);
+                        await model.File.CopyToAsync(fileStream);
                     }
 
                     book.BookPath = "/images/books/" + uniqueFileName;
                 }
-
                 book.Title = model.Name;
                 book.Description = model.Description;
                 book.LibrarySectionId = model.LibrarySectionId;
+
 
                 _context.Books.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            // إذا فشل التحقق: إعادة تعبئة القائمة
-            var librarySections = _context.Sections
-                .OfType<LibrarySection>()
-                .Select(s => new { s.SectionId, s.Name })
-                .ToList();
 
-            ViewBag.LibrarySections = new SelectList(librarySections, "SectionId", "Name", model.LibrarySectionId);
 
             return View(model);
         }
@@ -127,18 +113,29 @@ namespace school_hub.Areas.Adminstration.Controllers
         // GET: Adminstration/Books/Edit/5
         public async Task<IActionResult> Edit(short? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var book = await _context.Books.FindAsync(id);
             if (book == null)
             {
                 return NotFound();
             }
-            ViewData["LibrarySectionId"] = new SelectList(_context.Set<LibrarySection>(), "SectionId", "SectionId", book.LibrarySectionId);
-            return View(book);
+
+            var model = new InputBookViewModel
+            {
+                Id = book.BookId,
+                Name = book.Title,
+                Description = book.Description,
+                LibrarySectionId = book.LibrarySectionId,
+                ExistingImagePath = book.BookPath,
+                LibrarySectionItems = _context.Set<LibrarySection>()
+                    .Select(s => new SelectListItem
+                    {
+                        Value = s.SectionId.ToString(),
+                        Text = s.Name
+                    }).ToList()
+            };
+
+            return View(model);
+
         }
 
         // POST: Adminstration/Books/Edit/5
@@ -146,55 +143,75 @@ namespace school_hub.Areas.Adminstration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Book book, IFormFile imagefile)
+        public async Task<IActionResult> Edit(short id, InputBookViewModel model)
         {
-            if (id != book.BookId)
+            if (!ModelState.IsValid)
+            {
+                model.LibrarySectionItems = _context.Set<LibrarySection>()
+                    .Select(s => new SelectListItem
+                    {
+                        Value = s.SectionId.ToString(),
+                        Text = s.Name
+                    }).ToList();
+
+                return View(model);
+            }
+
+            var book = await _context.Books.FindAsync(id);
+            if (book == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (model.File != null && model.File.Length > 0)
                 {
-                    if (imagefile != null && imagefile.Length > 0)
+                    var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images/books/");
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.File.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    Directory.CreateDirectory(uploadsFolder);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
-                        var uploadsfolder = Path.Combine(_hostingEnvironment.WebRootPath, "images/ccc");
-                        var uniquefilename = Guid.NewGuid().ToString() + "_" + imagefile.FileName;
-                        var filepath = Path.Combine(uploadsfolder, uniquefilename);
-                        using (var filestream = new FileStream(filepath, FileMode.Create))
-                        {
-                            await imagefile.CopyToAsync(filestream);
-                        }
-                        if (!string.IsNullOrEmpty(book.BookPath))
-                        {
-                            var oldimagepath = Path.Combine(_hostingEnvironment.WebRootPath, book.Description.TrimStart('/'));
-                            if (System.IO.File.Exists(oldimagepath))
-                            {
-                                System.IO.File.Delete(oldimagepath);
-                            }
-                        }
-                      book.BookPath= "/images/ccc/" + uniquefilename;
+                        await model.File.CopyToAsync(fileStream);
                     }
-                    _context.Update(book);
-                    await _context.SaveChangesAsync();
+
+                    if (!string.IsNullOrEmpty(book.BookPath))
+                    {
+                        var oldImagePath = Path.Combine(_hostingEnvironment.WebRootPath, book.BookPath.TrimStart('/'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    book.BookPath = "/images/books/" + uniqueFileName;
                 }
 
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BookExists(book.BookId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+           
+                book.Title = model.Name;
+                book.Description = model.Description;
+                book.LibrarySectionId = model.LibrarySectionId;
+
+                _context.Update(book);
+                await _context.SaveChangesAsync();
             }
-            return View(book);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BookExists(book.BookId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
+
 
         // GET: Adminstration/Books/Delete/5
         public async Task<IActionResult> Delete(short? id)
