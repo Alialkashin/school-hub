@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using school_hub.Data;
 using school_hub.Models;
 
-namespace school_hub.Areas.Student.Controllers
+namespace school_hub.Areas.Students.Controllers
 {
     public class CommentsController : Controller
     {

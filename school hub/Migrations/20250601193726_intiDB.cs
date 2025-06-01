@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace school_hub.Migrations
 {
     /// <inheritdoc />
-    public partial class initDb : Migration
+    public partial class intiDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -690,7 +690,8 @@ namespace school_hub.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Subjects_TeacherId",
                 table: "Subjects",
-                column: "TeacherId");
+                column: "TeacherId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Units_SubjectId",

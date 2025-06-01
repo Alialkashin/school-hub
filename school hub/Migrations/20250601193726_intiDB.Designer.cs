@@ -12,8 +12,8 @@ using school_hub.Data;
 namespace school_hub.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    [Migration("20250601064656_sum edit")]
-    partial class sumedit
+    [Migration("20250601193726_intiDB")]
+    partial class intiDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

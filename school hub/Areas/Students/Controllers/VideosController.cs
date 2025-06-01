@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using school_hub.Data;
 
-namespace school_hub.Controllers
+namespace school_hub.Students.Controllers
 {
     public class VideosController : Controller
     {

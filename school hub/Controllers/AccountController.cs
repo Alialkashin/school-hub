@@ -43,10 +43,11 @@ namespace school_hub.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            foreach (var item in result.Errors)
+            foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(item.Code, item.Description);
+                ModelState.AddModelError(string.Empty, error.Description);
             }
+
             return View();
 
 

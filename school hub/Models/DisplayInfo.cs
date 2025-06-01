@@ -5,13 +5,13 @@ namespace school_hub.Models
     public class DisplayInfo //DisplayInfo
     {
       
-        [DisplayName("ÇáÇÓã")]
+        [DisplayName("Ø§Ù„Ø§Ø³Ù…")]
         public string Name { get; set; }
 
-        [DisplayName("ÇáæÕİ")]
+        [DisplayName("Ø§Ù„ÙˆØµÙ")]
         public string Description { get; set; }
 
-        [DisplayName("ãÓÇÑ ÇáÕæÑÉ")]
+        [DisplayName("Ø±Ø§Ø¨Ø· Ø§Ù„ØµÙˆØ±Ø©")]
         public string ImagePath { get; set; }
 
     }

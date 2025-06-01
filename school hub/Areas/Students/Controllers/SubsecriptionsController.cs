@@ -5,7 +5,7 @@ using school_hub.Models;
 using school_hub.ViewModles;
 using System.Security.Claims;
 
-namespace school_hub.Areas.Student.Controllers
+namespace school_hub.Areas.Students.Controllers
 {
 
     // إذا كنت تستخدم int كـ Id
