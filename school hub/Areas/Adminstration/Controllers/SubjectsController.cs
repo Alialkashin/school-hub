@@ -65,7 +65,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 }).ToList();
 
             inputsubjectViewModel.Teacher = _context.Users
-                .Where(u => u.UserType == enUserType.Teacher)
+                .OfType<Teacher>()
                 .Select(u => new SelectListItem
                 {
                     Value = u.Id.ToString(),
