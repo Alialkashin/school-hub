@@ -1,0 +1,55 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "التسجيل بالمنصة";
+}
+
+
+<div class="container mt-5">
+    <h1 class="text-center text-dark">@ViewData["Title"]</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <section class="bg-light p-5 rounded shadow-lg">
+                <form asp-action="Register" method="Post">
+                    <h2 class="text-center mb-4">إنشاء حساب جديد</h2>
+                    <hr />
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                    <span></span>
+                    <div class="form-floating mb-3">
+                        <input asp-for="UserName" class="form-control" aria-required="false " placeholder="example@gmail.com" >
+                        <label asp-for="UserName" class="form-label">البريد الإلكتروني(اختياري)</label>
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Email" class="form-control" aria-required="true" placeholder="example@gmail.com" >
+                        <label asp-for="Email" class="form-label">البريد الإلكتروني</label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="كلمة المرور" />
+                        <label asp-for="Password" class="form-label">كلمة المرور</label>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <!-- حقل تأكيد كلمة المرور -->
+                    <div class="form-floating mb-3">
+                        <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="تأكيد كلمة المرور" />
+                        <label asp-for="ConfirmPassword" class="form-label">تأكيد كلمة المرور</label>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <!-- زر التسجيل -->
+                    <div>
+                        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">تسجيل</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

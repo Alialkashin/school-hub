@@ -1,3 +1,4 @@
+using Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using school_hub.Data;
@@ -15,16 +16,21 @@ builder.Services.AddIdentity<User, IdentityRole<int>>()
 .AddDefaultTokenProviders()
 .AddEntityFrameworkStores<AppDBContext>();
 
-builder.Services.AddRazorPages();
 builder.Logging.AddConsole();
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.SignIn.RequireConfirmedEmail = false;
+});
 var app = builder.Build();
 
 
 using (var scope = app.Services.CreateScope())
 {
     AppDBContext context = scope.ServiceProvider.GetRequiredService<AppDBContext>();
+    RoleManager<IdentityRole<int>> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
     DbInitializer.Seed(context);
+    await RoleInitializer.SeedRoleAsync(context ,roleManager);
 }
 
 
@@ -50,7 +56,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages();
 app.Run();
 //لتعديل واجهة واحدة
 //dotnet aspnet-codegenerator identity -dc ApplicationDbContext --files "Account/Login"

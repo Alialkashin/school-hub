@@ -8,24 +8,25 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace school_hub.Areas.Tetcher.Controllers
 {
+    [Area("Teacher")]
     public class UnitsController : Controller
     {
         private readonly AppDBContext _context;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
-        private readonly int techerId;
+        private int teacherId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
         public UnitsController(AppDBContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
             _hostingEnvironment = hostEnvironment;
-            techerId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
         }
 
 
         public IActionResult Index()
         {
-            ICollection<Unit> units = (ICollection<Unit>)_context.Subjects.Where(s => s.TeacherId == techerId).SelectMany(s => s.Units);
+            ICollection<Unit> units = (ICollection<Unit>)_context.Subjects.Where(s => s.TeacherId == teacherId).SelectMany(s => s.Units);
             return View(units);
         }
         [HttpGet]
@@ -52,7 +53,7 @@ namespace school_hub.Areas.Tetcher.Controllers
                     }
                     unit.ImagePath = "~/images/Units" + uniqueFileName;
                 }
-                unit.SubjectId = _context.Subjects.FirstOrDefault(s => s.TeacherId == techerId)!.SubjectId;
+                unit.SubjectId = _context.Subjects.FirstOrDefault(s => s.TeacherId == teacherId)!.SubjectId;
                 unit.Name = model.Name;
                 unit.Description = model.Description;
                 return RedirectToAction("Index");
@@ -83,12 +84,12 @@ namespace school_hub.Areas.Tetcher.Controllers
             return Json("done");
 
         }
-    
-            
 
-        
-        
-        
-        
+
+
+
+
+
+
     }
 }

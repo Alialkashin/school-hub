@@ -10,9 +10,10 @@ namespace school_hub.Models
         public bool IsActive { get; set; }
         public enUserType UserType { get; set; }
     }
+    
     public enum enUserType
     {
-   
+
         [Display(Name = "مشرف")]
         Admin,
 
@@ -21,8 +22,8 @@ namespace school_hub.Models
 
         [Display(Name = "معلم")]
         Teacher
-    
 
-}
+
+    }
 
 }
