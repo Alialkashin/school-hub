@@ -93,11 +93,12 @@ namespace school_hub.Data
 
 			modelBuilder.Entity<Subject>()
 			.HasOne(s => s.Teacher)
-			.WithOne(t => t.Subject)
-			.HasForeignKey<Subject>(s => s.TeacherId)
+			.WithMany(t => t.Subjects)
+			.HasForeignKey(s => s.TeacherId)
 			.OnDelete(DeleteBehavior.NoAction);
 
 			modelBuilder.Entity<Unit>()
+			
 			.HasMany(u => u.Lessons)
 			.WithOne(l => l.Unit)
 			.HasForeignKey(l => l.UnitId)

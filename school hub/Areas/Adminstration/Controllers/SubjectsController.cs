@@ -132,64 +132,6 @@ namespace school_hub.Areas.Adminstration.Controllers
 
                 return View(model);
             }
-
-        
-
-        // GET: Adminstration/Subjects/Edit/5
-        public async Task<IActionResult> Edit(short? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var subject = await _context.Subjects.FindAsync(id);
-            if (subject == null)
-            {
-                return NotFound();
-            }
-            ViewData["StudyPlanId"] = new SelectList(_context.StudyPlans, "StudyPlanId", "StudyPlanId", subject.StudyPlanId);
-            ViewData["TeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "Id", subject.TeacherId);
-            return View(subject);
-        }
-
-        // POST: Adminstration/Subjects/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(short id, [Bind("SubjectId,TotalDuration,TeacherId,StudyPlanId,Name,Description,ImagePath")] Subject subject)
-        {
-            if (id != subject.SubjectId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(subject);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SubjectExists(subject.SubjectId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["StudyPlanId"] = new SelectList(_context.StudyPlans, "StudyPlanId", "StudyPlanId", subject.StudyPlanId);
-            ViewData["TeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "Id", subject.TeacherId);
-            return View(subject);
-        }
-
         // GET: Adminstration/Subjects/Delete/5
         public async Task<IActionResult> Delete(short? id)
         {
@@ -225,9 +167,6 @@ namespace school_hub.Areas.Adminstration.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SubjectExists(short id)
-        {
-            return _context.Subjects.Any(e => e.SubjectId == id);
-        }
+        
     }
 }

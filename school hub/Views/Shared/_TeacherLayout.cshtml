@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - لوحة الأستاذ</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/school_hub.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/fontawesome-free-6.7.2-web/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/teacher-layout.css" />
+</head>
+
+<body>
+    <div class="teacher-container">
+        <nav class="teacher-sidebar bg-dark text-white">
+            <div class="sidebar-header p-3 mb-3 border-bottom">
+                <h4><i class="fas fa-chalkboard-teacher me-2"></i>لوحة الأستاذ</h4>
+            </div>
+            <ul class="nav flex-column p-2">
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" asp-controller="Subjects" asp-action="MySubjects">
+                        <i class="fas fa-book-open me-2 text-info"></i><em>موادي الدراسية</em>
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" asp-controller="Students" asp-action="MyStudents">
+                        <i class="fas fa-user-graduate me-2 text-primary"></i><em>طلابي</em>
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" asp-controller="Statistics" asp-action="Index">
+                        <i class="fas fa-chart-line me-2 text-warning"></i><em>إحصائيات الأداء</em>
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a class="nav-link text-white" asp-controller="Profile" asp-action="Index">
+                        <i class="fas fa-user-circle me-2 text-success"></i><em>حسابي</em>
+                    </a>
+                </li>
+                <li class="nav-item mt-4">
+                    <a class="nav-link text-white" asp-controller="Home" asp-action="Logout">
+                        <i class="fas fa-sign-out-alt me-2 text-danger"></i><em>تسجيل الخروج</em>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="teacher-main p-4">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
