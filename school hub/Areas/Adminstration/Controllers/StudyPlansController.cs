@@ -229,18 +229,30 @@ namespace school_hub.Areas.Adminstration.Controllers
         }
 
         // POST: Adminstration/StudyPlans/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(short id)
         {
-            var studyPlan = await _context.StudyPlans.FindAsync(id);
-            if (studyPlan != null)
+            var studyplan = await _context.StudyPlans.FindAsync(id);
+            if (studyplan != null)
             {
-                _context.StudyPlans.Remove(studyPlan);
+
+                if (!string.IsNullOrEmpty(studyplan.ImagePath))
+                {
+                    var filePath = Path.Combine(_hostingEnvironmentstudyplans.WebRootPath, studyplan.ImagePath.TrimStart('/'));
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+
+                _context.StudyPlans.Remove(studyplan);
+                await _context.SaveChangesAsync();
+                return Content("done");
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Content("fail");
+
         }
 
         private bool StudyPlanExists(short id)

@@ -1,11 +1,11 @@
-﻿@model school_hub.Models.StudySection
+﻿@model InputstudySectionViewModel
 
 @{
-    ViewData["Title"] = "Edit";
-  
+    ViewData["Title"] = "تعديل";
+
 }
 
-<h1>Edit</h1>
+<h1>تعديل</h1>
 
 <h4>StudySection</h4>
 <hr />
@@ -13,12 +13,10 @@
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <input type="hidden" asp-for="SectionId" />
-          @*   <div class="form-group">
-                <label asp-for="SectionType" class="control-label"></label>
-                <select asp-for="SectionType" class="form-control"></select>
-                <span asp-validation-for="SectionType" class="text-danger"></span>
-            </div> *@
+
+            <input type="hidden" asp-for="ExistingImagePath" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -29,22 +27,36 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ImagePath" class="control-label"></label>
-                <input asp-for="ImagePath" class="form-control" type="file" />
-                <span asp-validation-for="ImagePath" class="text-danger"></span>
+            @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
+            {
+                <div class="form-group" style="margin-bottom:20px">
+                    <label>Current Image</label><br />
+                    <img src="@Model.ExistingImagePath" class="img-thumbnail" style="width:220px; height:200px" />
+                </div>
+            }
+            <div class="form-group " style="margin-bottom:20px">
+                <button type="button" class="btn btn-warning" onclick="showFileInput()">تغيير الصورة</button>
+            </div>
+            <div class="form-group " id="fileInputDiv" style="display:none; margin-bottom:20px">
+                <label asp-for="File" class="control-label">اختر صورة جديدة</label>
+                <input asp-for="File" class="form-control" type="file" />
+                <span asp-validation-for="File" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="حفظ" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">العودة الى القائمة</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+

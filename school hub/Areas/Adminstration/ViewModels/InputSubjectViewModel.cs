@@ -15,6 +15,7 @@ namespace school_hub.Areas.Adminstration.ViewModels
             public short StudyPlanId { get; set; }
         [Display(Name="المدة التقريبية للمادة")]
         public int TotalDuration { get; set; }
+        public string? ExistingImagePath { get; set; }
         public List<SelectListItem>? Teacher { get; set; }
 
             public List<SelectListItem>? StudyPlans { get; set; }

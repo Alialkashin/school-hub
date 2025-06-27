@@ -1,43 +1,43 @@
 ﻿@model school_hub.Models.StudyPlan
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "التفاصيل ";
 
 }
 
-<h1>Details</h1>
+<h1>التفاصيل</h1>
 
 <div>
-    <h4>StudyPlan</h4>
+    <h4>قسم الدراسية</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.StudySection)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.StudySection.SectionId)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ImagePath)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             <img src="@Html.DisplayFor(model => model.ImagePath)" class="tumbnail" style="width:120px; height:100px" />
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.StudyPlanId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.StudyPlanId">التعديل</a> |
+    <a asp-action="Index">العودة الى القائمة</a>
 </div>

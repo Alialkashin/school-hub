@@ -164,18 +164,25 @@ namespace school_hub.Areas.Adminstration.Controllers
         }
 
         // POST: Adminstration/StudySections/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var studySection = await _context.Sections.FindAsync(id);
-            if (studySection != null)
+            var section = await _context.Sections.OfType<StudySection>().FirstOrDefaultAsync(s => s.SectionId == id);
+            if (section != null)
             {
-                _context.Sections.Remove(studySection);
-            }
+                if (!string.IsNullOrEmpty(section.ImagePath))
+                {
+                    var path = Path.Combine(_hostingEnvironmentstudysection.WebRootPath, section.ImagePath.TrimStart('/'));
+                    if (System.IO.File.Exists(path))
+                        System.IO.File.Delete(path);
+                }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                _context.Sections.Remove(section);
+                await _context.SaveChangesAsync();
+                return Content("done");
+            }
+            return Content("fail");
         }
 
         private bool StudySectionExists(int id)
