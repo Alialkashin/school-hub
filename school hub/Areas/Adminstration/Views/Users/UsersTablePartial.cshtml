@@ -1,0 +1,44 @@
+﻿@model List<school_hub.Models.User>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning">لا يوجد مستخدمون من هذا النوع.</div>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>البريد</th>
+                <th>اسم المستخدم</th>
+                <th>الحالة</th>
+                <th>إجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@user.UserName</td>
+                    <td>
+                        @if (user.IsActive)
+                        {
+                            <span class="text-success">نشط</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">محظور</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-warning">تعديل</a>
+                        <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-sm btn-danger">حذف</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="Create" asp-route-userType="@Model.First().UserType" class="btn btn-primary">إضافة مستخدم جديد</a>
+}

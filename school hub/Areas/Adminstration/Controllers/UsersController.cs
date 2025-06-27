@@ -191,5 +191,23 @@ namespace school_hub.Areas.Adminstration.Controllers
                     Text = x.GetDisplayName()
                 }).ToList();
         }
+        public async Task<IActionResult> LoadUsersTable(string userType)
+        {
+            if (!Enum.TryParse<enUserType>(userType, out var parsedType))
+                return BadRequest("نوع المستخدم غير صالح");
+
+            var users = await _context.Users
+                .Where(u => u.UserType == parsedType)
+                .ToListAsync();
+
+            return PartialView("_UsersTablePartial", users);
+        }
+        public IActionResult UsersDashboard()
+        {
+            return View();
+        }
+
+
+
     }
 }
