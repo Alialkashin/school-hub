@@ -1,0 +1,115 @@
+@model List<Subject>
+@{
+    ViewData["Title"] = "المواد";
+}
+<style>
+    #confirmDialog {
+        display: none;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        border: 2px solid #333;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+    #overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+</style>
+<h2>المواد</h2>
+@Html.AntiForgeryToken()
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>الاسم</th>
+            <th>المدة</th>
+            <th>الخطة الدراسية</th>
+            <th>الصورة</th>
+            <th>الإجراءات</th>
+        </tr>
+    </thead>
+    <tbody id="subjectsTable">
+        @foreach (var item in Model)
+        {
+            <tr id="row-@item.SubjectId">
+                <td>@item.Name</td>
+                <td>@item.TotalDuration</td>
+                <td>@item.StudyPlan?.Name</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ImagePath))
+                    {
+                        <img src="@item.ImagePath" alt="صورة المادة" class="thumbnail" style="width:120px; height:100px;" />
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.SubjectId" class="btn btn-sm btn-warning">تعديل</a>
+                    <button class="btn btn-sm btn-danger" onclick="showDeleteDialog(@item.SubjectId)">حذف</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="overlay"></div>
+<div id="confirmDialog">
+    <p>هل أنت متأكد من حذف هذه المادة؟</p>
+    <button class="btn btn-danger" onclick="confirmDelete()">نعم، حذف</button>
+    <button class="btn btn-secondary" onclick="closeDialog()">إلغاء</button>
+</div>
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="deleteToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">تم حذف المادة بنجاح.</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentId = 0;
+
+    function showDeleteDialog(id) {
+        currentId = id;
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('confirmDialog').style.display = 'block';
+    }
+
+    function closeDialog() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('confirmDialog').style.display = 'none';
+    }
+
+    function confirmDelete() {
+        fetch(`/Teacher/Subjects/DeleteConfirmed/${currentId}`, {
+            method: 'POST',
+            headers: {
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                document.getElementById(`row-${currentId}`).remove();
+                const toast = new bootstrap.Toast(document.getElementById('deleteToast'));
+                toast.show();
+            } else {
+                console.error("فشل الحذف");
+            }
+            closeDialog();
+        })
+        .catch(error => {
+            console.error("خطأ في الاتصال:", error);
+            closeDialog();
+        });
+    }
+</script>

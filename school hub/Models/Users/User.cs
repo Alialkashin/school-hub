@@ -9,6 +9,7 @@ namespace school_hub.Models
         public string? ProfilePicturePath { get; set; }
         public bool IsActive { get; set; }
         public enUserType UserType { get; set; }
+        public bool IsFirstLogin { get; set; } = false;
     }
     
     public enum enUserType

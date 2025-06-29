@@ -8,7 +8,6 @@ using System.Security.Claims;
 namespace school_hub.Areas.Students.Controllers
 {
 
-    // إذا كنت تستخدم int كـ Id
     [Authorize]
     public class SubsecriptionsController : Controller
     {
