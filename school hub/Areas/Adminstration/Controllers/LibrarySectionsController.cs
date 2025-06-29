@@ -201,20 +201,47 @@ namespace school_hub.Areas.Adminstration.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var studySection = await _context.Sections
+                .FirstOrDefaultAsync(m => m.SectionId == id);
+            if (studySection == null)
+            {
+                return NotFound();
+            }
+
+            return View(studySection);
+        }
 
         // POST: Adminstration/LibrarySections/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var librarySection = await _context.Sections.FindAsync(id);
-            if (librarySection != null)
+            var library = await _context.Sections.OfType<LibrarySection>().FirstOrDefaultAsync(s => s.SectionId == id);
+            if (library != null)
             {
-                _context.Sections.Remove(librarySection);
+               
+                if (!string.IsNullOrEmpty(library.ImagePath))
+                {
+                    var filePath = Path.Combine(_hostingEnvironmentlibary.WebRootPath, library.ImagePath.TrimStart('/'));
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+
+                _context.Sections.Remove(library);
+                await _context.SaveChangesAsync();
+                return Content("done");
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Content("fail");
         }
 
         private bool LibrarySectionExists(int id)

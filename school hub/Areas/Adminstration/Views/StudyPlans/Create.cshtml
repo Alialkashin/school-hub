@@ -1,13 +1,13 @@
 ﻿@model InputStudyPlansViewModel
 
 @{
-    ViewData["Title"] = "Create";
-   
+    ViewData["Title"] = "اضافة  ";
+
 }
 
-<h1>Create</h1>
+<h1>@ViewData["Title"]</h1>
 
-<h4>StudyPlan</h4>
+<h4>اقسام دراسية</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -33,16 +33,18 @@
                 <span asp-validation-for="File" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="اضافة" class="btn btn-primary" />
             </div>
-            </form>
+        </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">العودة الى قائمة</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

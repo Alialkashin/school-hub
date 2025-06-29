@@ -16,9 +16,8 @@ namespace school_hub.Areas.Adminstration.ViewModels
         [Display(Name = "المدة التقريبية للمادة")]
         public int TotalDuration { get; set; }
         public List<SelectListItem>? Teachers { get; set; }
-
-        public List<SelectListItem>? StudyPlans { get; set; }
         public string? ExistingImagePath { get; set; }
+        public List<SelectListItem>? StudyPlans { get; set; }
 
 
     }

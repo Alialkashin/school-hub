@@ -1,0 +1,24 @@
+@model Subject
+
+<div class="container mt-4">
+    <h2 class="mb-4">الوحدات في مادة: @Model.Name</h2>
+
+    <div class="row">
+        @foreach (var unit in Model.Units)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <a asp-action="UnitLessons" asp-controller="Subsecriptions" asp-route-unitId="@unit.UnitId"></a>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@unit.Name</h5>
+                        <p class="card-text">
+                            @unit.Description
+                        </p>
+                        <div class="mt-auto">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

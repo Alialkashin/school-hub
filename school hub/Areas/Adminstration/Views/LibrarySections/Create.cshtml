@@ -14,16 +14,10 @@
         <form asp-action="Create" method="post" enctype="multipart/form-data">
 <<<<<<< HEAD
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-          @*   <div class="form-group">
-                <label asp-for="LibrarySectionId" class="control-label"></label>
-                <select asp-for="LibrarySectionId" asp-items="Model.LibrarySection" class="form-control"></select>
-
-                <span asp-validation-for="LibrarySectionId" class="text-danger"></span>
-            </div> *@
-
+     
 =======
->>>>>>> cf82e574bd4ebc3980ef8be48e5227d42cd6f033
 
+>>>>>>> 52cf5c57b0ffc8c349b0fa5d9bdb1c292e5655f4
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -40,19 +34,19 @@
                 <label asp-for="File" class="control-label"></label>
                 <input asp-for="File" class="form-control" type="file" />
                 <span asp-validation-for="File" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <input type="submit" value="اضافة " class="btn btn-primary" />
+                </div>
         </form>
+    </div>
+</div>
 
-            <hr />
-            @*<h5>إضافة كتب (اختياري)</h5>
-            <div id="books-container">
-                @for (int i = 0; i < Model.Books.Count; i++)
-                {
-                    ViewData["Index"] = i;
-                    @await Html.PartialAsync("_BookInputPartial", Model.Books[i])
-                }
-            </div>
+<div>
+    <a asp-action="Index">العودة الى القائمة </a>
+</div>
 
-            <button type="button" class="btn btn-secondary mb-3" onclick="addBook()">إضافة كتاب آخر</button>
-*@
- 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
