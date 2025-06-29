@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting.Internal;
+using PdfLibCore;
 using school_hub.Areas.Adminstration.ViewModels;
 using school_hub.Data;
 using school_hub.Models;
+
+
+
+
 
 namespace school_hub.Areas.Adminstration.Controllers
 {
@@ -66,57 +67,91 @@ namespace school_hub.Areas.Adminstration.Controllers
             return View(model);
 
         }
+      
 
 
         // POST: Adminstration/Books/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-
-
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(InputBookViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                Book book = new Book();
-                if (model.File != null && model.File.Length > 0)
-                {
-                    var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images/books/");
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.File.FileName;
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    Directory.CreateDirectory(uploadsFolder);
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                model.LibrarySectionItems = _context.Set<LibrarySection>()
+                    .Select(s => new SelectListItem
                     {
-                        await model.File.CopyToAsync(fileStream);
-                    }
-
-                    book.BookPath = "/images/books/" + uniqueFileName;
-                }
-                book.Title = model.Name;
-                book.Description = model.Description;
-
-
-                _context.Books.Add(book);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                        Value = s.SectionId.ToString(),
+                        Text = s.Name
+                    }).ToList();
+                return View(model);
             }
 
+            if (model.File == null || model.File.Length == 0)
+            {
+                ModelState.AddModelError("File", "يرجى اختيار ملف PDF.");
+                return View(model);
+            }
 
-            return View(model);
+            if (!model.File.ContentType.Equals("application/pdf", StringComparison.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError("File", "يجب رفع ملف PDF فقط.");
+                return View(model);
+            }
+
+            // حفظ ملف PDF
+            string pdfFolder = Path.Combine(_hostingEnvironment.WebRootPath, "PDF");
+            Directory.CreateDirectory(pdfFolder);
+
+            string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(model.File.FileName);
+            string pdfFilePath = Path.Combine(pdfFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(pdfFilePath, FileMode.Create))
+            {
+                await model.File.CopyToAsync(fileStream);
+            }
+
+            // استخراج عدد صفحات باستخدام PdfLibCore
+           
+            using (var document = new PdfDocument(System.IO.File.ReadAllBytes(pdfFilePath)))
+            {
+          model.PageCount = document.Pages.Count;
+            }
+
+            // حفظ بيانات الكتاب في قاعدة البيانات
+            var book = new Book
+            {
+                Title = model.Name,
+                Description = model.Description,
+                LibrarySectionId = model.LibrarySectionId,
+                BookPath = "/PDF/" + uniqueFileName,
+                PageCount = model.PageCount,
+                UploadDate = DateTime.Now
+            };
+
+            _context.Books.Add(book);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
+
+
+
+
+
+
+        // GET: Adminstration/Books/Edit/5
         // GET: Adminstration/Books/Edit/5
         public async Task<IActionResult> Edit(short? id)
         {
+            if (id == null)
+                return NotFound();
+
             var book = await _context.Books.FindAsync(id);
             if (book == null)
-            {
                 return NotFound();
-            }
 
             var model = new InputBookViewModel
             {
@@ -124,7 +159,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 Name = book.Title,
                 Description = book.Description,
                 LibrarySectionId = book.LibrarySectionId,
-                ExistingImagePath = book.BookPath,
+                ExistingImagePath = book.BookPath, // هنا مسار ملف الـ PDF أو الصورة
                 LibrarySectionItems = _context.Set<LibrarySection>()
                     .Select(s => new SelectListItem
                     {
@@ -134,18 +169,16 @@ namespace school_hub.Areas.Adminstration.Controllers
             };
 
             return View(model);
-
         }
 
         // POST: Adminstration/Books/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(short id, InputBookViewModel model)
         {
             if (!ModelState.IsValid)
             {
+                // إعادة تحميل قائمة الأقسام إذا فشل التحقق
                 model.LibrarySectionItems = _context.Set<LibrarySection>()
                     .Select(s => new SelectListItem
                     {
@@ -158,38 +191,57 @@ namespace school_hub.Areas.Adminstration.Controllers
 
             var book = await _context.Books.FindAsync(id);
             if (book == null)
-            {
                 return NotFound();
-            }
 
             try
             {
                 if (model.File != null && model.File.Length > 0)
                 {
-                    var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "images/books/");
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.File.FileName;
+                    // تحقق نوع الملف PDF فقط
+                    if (!model.File.ContentType.Equals("application/pdf", StringComparison.OrdinalIgnoreCase))
+                    {
+                        ModelState.AddModelError("File", "يجب رفع ملف PDF فقط.");
+                        model.LibrarySectionItems = _context.Set<LibrarySection>()
+                            .Select(s => new SelectListItem
+                            {
+                                Value = s.SectionId.ToString(),
+                                Text = s.Name
+                            }).ToList();
+                        return View(model);
+                    }
+
+                    // مسار مجلد رفع ملفات PDF
+                    var uploadsFolder = Path.Combine(_hostingEnvironment.WebRootPath, "PDF");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    // اسم ملف فريد
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(model.File.FileName);
                     var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                    Directory.CreateDirectory(uploadsFolder);
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         await model.File.CopyToAsync(fileStream);
-
                     }
 
+                    // حذف الملف القديم إذا موجود
                     if (!string.IsNullOrEmpty(book.BookPath))
                     {
-                        var oldImagePath = Path.Combine(_hostingEnvironment.WebRootPath, book.BookPath.TrimStart('/'));
-                        if (System.IO.File.Exists(oldImagePath))
+                        var oldFilePath = Path.Combine(_hostingEnvironment.WebRootPath, book.BookPath.TrimStart('/'));
+                        if (System.IO.File.Exists(oldFilePath))
                         {
-                            System.IO.File.Delete(oldImagePath);
+                            System.IO.File.Delete(oldFilePath);
                         }
                     }
 
-                    book.BookPath = "/images/books/" + uniqueFileName;
+                    book.BookPath = "/PDF/" + uniqueFileName;
+
+                    // استخدم PdfLibCore لقراءة عدد الصفحات
+                    using (var document = new PdfDocument(System.IO.File.ReadAllBytes(filePath)))
+                    {
+                        book.PageCount = document.Pages.Count;
+                    }
                 }
 
-           
                 book.Title = model.Name;
                 book.Description = model.Description;
                 book.LibrarySectionId = model.LibrarySectionId;
@@ -200,17 +252,16 @@ namespace school_hub.Areas.Adminstration.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if (!BookExists(book.BookId))
-                {
                     return NotFound();
-                }
                 else
-                {
                     throw;
-                }
             }
 
             return RedirectToAction(nameof(Index));
         }
+
+      
+
 
 
         // GET: Adminstration/Books/Delete/5
@@ -233,19 +284,31 @@ namespace school_hub.Areas.Adminstration.Controllers
         }
 
         // POST: Adminstration/Books/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(short id)
         {
             var book = await _context.Books.FindAsync(id);
             if (book != null)
             {
+                // حذف ملف الكتاب إن وجد
+                if (!string.IsNullOrEmpty(book.BookPath))
+                {
+                    var filePath = Path.Combine(_hostingEnvironment.WebRootPath, book.BookPath.TrimStart('/'));
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
+                }
+
                 _context.Books.Remove(book);
+                await _context.SaveChangesAsync();
+                return Content("done");
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Content("fail");
         }
+
 
         private bool BookExists(short id)
         {

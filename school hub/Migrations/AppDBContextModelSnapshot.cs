@@ -17,7 +17,7 @@ namespace school_hub.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.16")
+                .HasAnnotation("ProductVersion", "8.0.17")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -195,9 +195,15 @@ namespace school_hub.Migrations
                     b.Property<int>("LibrarySectionId")
                         .HasColumnType("int");
 
+                    b.Property<int>("PageCount")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UploadDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("BookId");
 
@@ -551,8 +557,7 @@ namespace school_hub.Migrations
 
                     b.HasIndex("StudyPlanId");
 
-                    b.HasIndex("TeacherId")
-                        .IsUnique();
+                    b.HasIndex("TeacherId");
 
                     b.ToTable("Subjects");
                 });
@@ -1004,8 +1009,8 @@ namespace school_hub.Migrations
                         .IsRequired();
 
                     b.HasOne("school_hub.Models.Teacher", "Teacher")
-                        .WithOne("Subject")
-                        .HasForeignKey("school_hub.Models.Subject", "TeacherId")
+                        .WithMany("Subjects")
+                        .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -1128,7 +1133,7 @@ namespace school_hub.Migrations
 
                     b.Navigation("Replies");
 
-                    b.Navigation("Subject");
+                    b.Navigation("Subjects");
                 });
 #pragma warning restore 612, 618
         }

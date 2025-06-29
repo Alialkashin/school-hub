@@ -21,7 +21,7 @@ namespace school_hub.Areas.Adminstration.ViewModels
             [Display(Name = "الوصف")]
             public string Description { get; set; }
 
-            [Display(Name = "صورة الكتاب")]
+            [Display(Name = " الكتاب")]
             public IFormFile? File { get; set; }
 
             public string? ExistingImagePath { get; set; }
@@ -31,10 +31,12 @@ namespace school_hub.Areas.Adminstration.ViewModels
             public int LibrarySectionId { get; set; }
 
             public List<SelectListItem> ?LibrarySectionItems { get; set; }
+        public int PageCount { get; set; }
+        public DateTime UploadDate { get; set; } 
 
 
-        
-    
+
+
     }
 
 }

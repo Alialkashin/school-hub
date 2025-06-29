@@ -11,7 +11,7 @@ namespace school_hub.Models
         [DisplayName("الوصف")]
         public string Description { get; set; }
 
-        [DisplayName("رابط الصورة")]
+        [DisplayName("الصورة")]
         public string ImagePath { get; set; }
 
     }

@@ -1,0 +1,44 @@
+@model StudyPlan
+
+@{
+    ViewData["Title"] = "تفاصيل المادة";
+}
+
+<div  class="text-center mb-4">
+    <!-- اسم المادة -->
+    <h2 class="mb-3">@Model.Name</h2>
+    <p class="text-muted">@Model.Description</p>
+
+    <hr />
+
+    <!-- عرض المواد (Subjects) -->
+    @* <h4 class="mt-4">المحتوى (Subjects):</h4> *@
+
+    @if (Model.Subjects != null && Model.Subjects.Any())
+    {
+        <div class="row mt-3">
+            @foreach (var subject in Model.Subjects)
+            {
+                <div class="col-md-4 mb-4">
+                    <a asp-action="SubjectDetails">
+                    <div class="card h-100 shadow-sm">
+                        @if (!string.IsNullOrEmpty(subject.ImagePath))
+                        {
+                            <img src="@subject.ImagePath" class="card-img-top" alt="صورة الموضوع" />
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@subject.Name</h5>
+                            <p class="card-text">@subject.Description</p>
+
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-danger mt-3">لا يوجد محتوى مرتبط حالياً.</p>
+    }
+</div>
