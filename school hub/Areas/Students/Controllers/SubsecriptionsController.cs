@@ -155,7 +155,7 @@ namespace school_hub.Areas.Students.Controllers
             }
 
             return View(lessonViewModels);
-        
+
         }
     }
 }
