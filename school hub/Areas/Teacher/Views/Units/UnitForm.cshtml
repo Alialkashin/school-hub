@@ -1,0 +1,54 @@
+@model UnitFormViewModel
+
+@{
+    ViewData["Title"] = Model.UnitId.HasValue ? "تعديل الوحدة" : "إضافة وحدة";
+}
+
+<h2 class="mb-4 text-center">@ViewData["Title"]</h2>
+<div style="margin: 3%;">
+<form asp-action="@(Model.UnitId.HasValue ? "Edit" : "Create")" asp-controller="Units" method="post" enctype="multipart/form-data">    <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+    <input type="hidden" asp-for="UnitId" />
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SubjectId" class="form-label"></label>
+        <select asp-for="SubjectId" class="form-select" asp-items="Model.Subjects">
+            <option value="">-- اختر المادة --</option>
+        </select>
+        <span asp-validation-for="SubjectId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ImageFile" class="form-label"></label>
+        <input asp-for="ImageFile" class="form-control" type="file" accept="image/*" />
+        <span asp-validation-for="ImageFile" class="text-danger"></span>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
+    {
+        <div class="mb-3">
+            <label class="form-label">الصورة الحالية:</label>
+            <div>
+                <img src="@Model.ExistingImagePath" alt="صورة الوحدة" class="img-thumbnail" style="max-height: 200px;" />
+            </div>
+        </div>
+    }
+
+    <div class="d-flex justify-content-between mt-4">
+        <button type="submit" class="btn btn-primary">@((Model.UnitId.HasValue ? "تحديث" : "إضافة"))</button>
+        <a asp-action="Index" class="btn btn-secondary">العودة للقائمة</a>
+    </div>
+</form>
+</div>

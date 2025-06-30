@@ -1,0 +1,38 @@
+@model IEnumerable<school_hub.Models.Lesson>
+
+@{
+    ViewData["Title"] = "إدارة الدروس";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">الدروس الخاصة بالوحدة</h1>
+
+    <a href="/Teacher/Lessons/Create?unitId=@ViewBag.UnitId" class="btn btn-success mb-3">إضافة درس جديد</a>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>رقم الدرس</th>
+                
+                <th>العنوان</th>
+                <th>الوصف</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var lesson in Model)
+            {
+                <tr>
+                    <td>@lesson.LessonNo</td>
+                    <td>@lesson.Title</td>
+                    <td>@lesson.Description</td>
+                    <td>
+                        <a href="/Teacher/Lessons/Edit/@lesson.LessonId" class="btn btn-sm btn-info">تعديل</a>
+                        <a href="/Teacher/Lessons/Details/@lesson.LessonId" class="btn btn-sm btn-primary">تفاصيل</a>
+                        <a href="/Teacher/Lessons/Delete/@lesson.LessonId" class="btn btn-sm btn-danger">حذف</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
