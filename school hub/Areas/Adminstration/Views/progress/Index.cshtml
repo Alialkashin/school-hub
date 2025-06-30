@@ -1,0 +1,33 @@
+﻿@model List<InputStudyPlanRequestViewModel>
+
+@{
+    ViewData["Title"] = "طلبات شراء الخطط الدراسية";
+}
+
+<h2 class="text-center my-4">طلبات شراء الخطط الدراسية</h2>
+
+<div class="container">
+    @foreach (var item in Model)
+    {
+        <div class="card mb-4 p-3 shadow-sm">
+            <h5 class="mb-3">طلب رقم: @item.RequestNumber</h5>
+
+            <p><strong>اسم الطالب:</strong> @item.StudentName</p>
+            <p><strong>الخطة المراد شراءها:</strong> @item.StudyPlanName</p>
+
+            <div>
+                <form asp-action="Approve" asp-controller="progress" method="post"
+                      asp-route-StudentId="@item.StudentId" asp-route-PlanId="@item.StudyPlanId"
+                      style="display:inline;">
+                    <button type="submit" class="btn btn-success btn-sm">تسليم الطلب</button>
+                </form>
+
+                <form asp-action="Reject" asp-controller="progress" method="post"
+                      asp-route-StudentId="@item.StudentId" asp-route-PlanId="@item.StudyPlanId"
+                      style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">رفض الطلب</button>
+                </form>
+            </div>
+        </div>
+    }
+</div>

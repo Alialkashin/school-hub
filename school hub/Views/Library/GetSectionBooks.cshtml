@@ -40,18 +40,15 @@
             {
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm book-card">
+                        <a href="@book.BookPath" class="btn btn-outline-light bg-primary" target="_blank"><img src="~/images-icons/22179_adobe_file_pdf_icon.png" alt="عرض PDF" style="width:80px; height:auto;" /></a>
+                       
                         <div class="card-body">
                             <h5 class="card-title">@book.Title</h5>
                         </div>
-
-                        <!-- الوصف بيظهر عند تمرير الماوس -->
                         <div class="book-description-hover">
                             @book.Description
                         </div>
 
-                        <div class="card-footer text-center">
-                            <a href="@book.BookPath" class="btn btn-outline-light bg-primary" target="_blank">قراءة الكتاب</a>
-                        </div>
                     </div>
                 </div>
             }
