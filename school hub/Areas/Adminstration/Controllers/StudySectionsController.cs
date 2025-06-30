@@ -9,7 +9,6 @@ using school_hub.Areas.Adminstration.ViewModels;
 using school_hub.Data;
 using school_hub.Models;
 using school_hub.ViewModels;
-using school_hub.ViewModles;
 
 namespace school_hub.Areas.Adminstration.Controllers
 {

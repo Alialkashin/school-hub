@@ -25,31 +25,12 @@ namespace school_hub.Areas.Adminstration.Controllers
         }
 
         // GET: Adminstration/Subjects
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var appDBContext = _context.Subjects.Include(s => s.StudyPlan).Include(s => s.Teacher);
-            return View(await appDBContext.ToListAsync());
+            List<Subject>? subjects = _context.Subjects.Include(s => s.StudyPlan).Include(s => s.Teacher).ToList();
+            return View(subjects);
         }
 
-        // GET: Adminstration/Subjects/Details/5
-        public async Task<IActionResult> Details(short? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var subject = await _context.Subjects
-                .Include(s => s.StudyPlan)
-                .Include(s => s.Teacher)
-                .FirstOrDefaultAsync(m => m.SubjectId == id);
-            if (subject == null)
-            {
-                return NotFound();
-            }
-
-            return View(subject);
-        }
 
         // GET: Adminstration/Subjects/Create
         public IActionResult Create()
@@ -64,7 +45,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                     Text = s.Name
                 }).ToList();
 
-            inputsubjectViewModel.Teacher = _context.Users
+            inputsubjectViewModel.Teachers = _context.Users
                 .OfType<Teacher>()
                 .Select(u => new SelectListItem
                 {
@@ -95,7 +76,7 @@ namespace school_hub.Areas.Adminstration.Controllers
 
                     if (model.File != null && model.File.Length > 0)
                     {
-                        var uploadsFolder = Path.Combine(_hostingEnvironmentsubject.WebRootPath, "images/subject/");
+                        var uploadsFolder = Path.Combine(_hostingEnvironmentsubject.WebRootPath, "images/subjects/");
                         var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.File.FileName;
                         var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
@@ -105,7 +86,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                             await model.File.CopyToAsync(fileStream);
                         }
 
-                        sub.ImagePath = "/images/subject/" + uniqueFileName;
+                        sub.ImagePath = "/images/subjects/" + uniqueFileName;
                     }
 
                     sub.Name = model.Name;
@@ -122,7 +103,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 // إعادة تعبئة القائمة عند الخطأ
               
 
-                model.Teacher = _context.Users
+                model.Teachers = _context.Users
                     .Where(u => u.UserType == enUserType.Teacher)
                     .Select(u => new SelectListItem
                     {
@@ -132,7 +113,108 @@ namespace school_hub.Areas.Adminstration.Controllers
 
                 return View(model);
             }
-        // GET: Adminstration/Subjects/Delete/5
+[HttpGet]
+        public async Task<IActionResult> Edit(short ? id)
+        {
+            Subject? subject = await _context.Subjects.FirstOrDefaultAsync(s=> s.SubjectId == id);
+            if (subject == null)
+                return NotFound();
+                
+            InputSubjectViewModel model = new InputSubjectViewModel()
+            {
+                Name = subject.Name,
+                SubjectId = subject.SubjectId,
+                Description = subject.Description,
+                ExistingImagePath = subject.ImagePath,
+                StudyPlans = _context.Set<StudyPlan>().Select(s => new SelectListItem
+                {
+                    Value = s.StudyPlanId.ToString(),
+                    Text = s.Name
+                }).ToList(),
+                Teachers = _context.Set<Teacher>().Select(s => new SelectListItem()
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.UserName
+                }).ToList(),
+                TotalDuration = subject.TotalDuration
+                       
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(InputSubjectViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.Teachers = _context.Set<User>().Select(s => new SelectListItem()
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.UserName
+                }).ToList();
+                model.StudyPlans = _context.Set<StudyPlan>().Select(s => new SelectListItem()
+                {
+                    Value = s.StudyPlanId.ToString(),
+                    Text = s.Name
+                }).ToList();
+                return View(model);
+            }
+
+            var subject = await _context.Subjects.FindAsync(model.SubjectId);
+            if (subject == null) { return NotFound(); }
+
+
+            try
+            {
+                if (model.File != null && model.File.Length > 0)
+                {
+                    var uploadsfolder = Path.Combine(_hostingEnvironmentsubject.WebRootPath, "images/subjects/");
+                    var uniquefilename = Guid.NewGuid().ToString() + "_" + model.File.FileName;
+                    var filepath = Path.Combine(uploadsfolder, uniquefilename);
+                    Directory.CreateDirectory(uploadsfolder);
+                    using (var filestream = new FileStream(filepath, FileMode.Create))
+                    {
+                        await model.File.CopyToAsync(filestream);
+                    }
+                    if (!string.IsNullOrEmpty(subject.ImagePath))
+                    {
+                        var oldimagefile = Path.Combine(_hostingEnvironmentsubject.WebRootPath, subject.ImagePath.TrimStart('/'));
+
+                        if (System.IO.File.Exists(oldimagefile))
+                        {
+                            System.IO.File.Delete(oldimagefile);
+                        }
+                    }
+                    subject.ImagePath = "/images/subjects/" + uniquefilename;
+                }
+
+                subject.Name = model.Name;
+                subject.Description = model.Description;
+                subject.StudyPlanId = model.StudyPlanId;
+                subject.TeacherId = model.TeacherId;
+                subject.TotalDuration = model.TotalDuration;
+
+
+
+                _context.Subjects.Update(subject);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Subjects.Any(s => s.SubjectId == model.SubjectId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+
+            }
+            return RedirectToAction(nameof(Index));
+
+
+
+        }
         public async Task<IActionResult> Delete(short? id)
         {
             if (id == null)
@@ -177,107 +259,6 @@ namespace school_hub.Areas.Adminstration.Controllers
             return Content("fail");
         }
 
-        // GET: Adminstration/Subjects/Edit/5
-        public async Task<IActionResult> Edit(short? id)
-        {
-            if (id == null)
-                return NotFound();
-
-            var subject = await _context.Subjects.FindAsync(id);
-            if (subject == null)
-                return NotFound();
-
-            var model = new InputSubjectViewModel
-            {
-          
-                Name = subject.Name,
-                Description = subject.Description,
-                StudyPlanId = subject.StudyPlanId,
-                TotalDuration = subject.TotalDuration,
-                TeacherId = subject.TeacherId,
-                ExistingImagePath = subject.ImagePath,
-                StudyPlans = _context.StudyPlans.Select(s => new SelectListItem
-                {
-                    Value = s.StudyPlanId.ToString(),
-                    Text = s.Name
-                }).ToList(),
-                Teacher = _context.Users.OfType<Teacher>().Select(t => new SelectListItem
-                {
-                    Value = t.Id.ToString(),
-                    Text = t.UserName
-                }).ToList()
-            };
-
-            return View(model);
-        }
-
-
-        // POST: Adminstration/Subjects/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(short id ,InputSubjectViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                model.StudyPlans = _context.StudyPlans.Select(s => new SelectListItem
-                {
-                    Value = s.StudyPlanId.ToString(),
-                    Text = s.Name
-                }).ToList();
-
-                model.Teacher = _context.Users.OfType<Teacher>().Select(t => new SelectListItem
-                {
-                    Value = t.Id.ToString(),
-                    Text = t.UserName
-                }).ToList();
-
-                return View(model);
-            }
-
-            var subject = await _context.Subjects.FindAsync(id);
-            if (subject == null)
-                return NotFound();
-
-         
-            if (model.File != null && model.File.Length > 0)
-            {
-                var uploadsFolder = Path.Combine(_hostingEnvironmentsubject.WebRootPath, "images/subject/");
-                var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.File.FileName;
-                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                Directory.CreateDirectory(uploadsFolder);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await model.File.CopyToAsync(fileStream);
-                }
-
-             
-                if (!string.IsNullOrEmpty(subject.ImagePath))
-                {
-                    var oldImagePath = Path.Combine(_hostingEnvironmentsubject.WebRootPath, subject.ImagePath.TrimStart('/'));
-                    if (System.IO.File.Exists(oldImagePath))
-                        System.IO.File.Delete(oldImagePath);
-                }
-
-                subject.ImagePath = "/images/subject/" + uniqueFileName;
-            }
-
-           
-            subject.Name = model.Name;
-            subject.Description = model.Description;
-            subject.StudyPlanId = model.StudyPlanId;
-            subject.TotalDuration = model.TotalDuration;
-            subject.TeacherId = model.TeacherId;
-
-            _context.Update(subject);
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(Index));
-        }
-        private bool SubjectExists(short id)
-        {
-            return _context.StudyPlans.Any(e => e.StudyPlanId == id);
-        }
 
     }
 }

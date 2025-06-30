@@ -27,7 +27,6 @@ namespace school_hub.Data
 			modelBuilder.Entity<StudentAnswer>().HasKey(e => new {e.StudentExamId, e.AnswerId});
 			#endregion
 
-
 			#region primary keys
 			modelBuilder.Entity<Answer>().HasKey(e => e.AnswerId);
 			modelBuilder.Entity<Exam>().HasKey(e => e.ExamId);

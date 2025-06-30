@@ -1,0 +1,91 @@
+@* Generic Confirmation Dialog *@
+
+<div id="overlay" style="display: none; position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 999;"></div>
+
+<div id="confirmDialog" style="display: none; position: fixed; left: 50%; top: 50%;
+    transform: translate(-50%, -50%); background-color: #fff; border: 2px solid #333;
+    padding: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); z-index: 1000; max-width: 400px;">
+    <p id="confirmMessage">هل أنت متأكد؟</p>
+    <div class="text-end">
+        <button id="confirmBtn" class="btn me-2">نعم، تنفيذ</button>
+        <button class="btn btn-secondary" onclick="closeDialog()">إلغاء</button>
+    </div>
+</div>
+
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+    <div id="confirmToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage">تم تنفيذ العملية بنجاح.</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let confirmConfig = {
+        url: '',
+        method: 'POST',
+        rowSelector: '',
+        message: 'هل أنت متأكد؟',
+        toastMessage: 'تم تنفيذ العملية بنجاح.',
+        btnClass: 'btn-danger',
+        btnText: 'نعم، تنفيذ'
+    };
+
+    function showConfirmDialog(config) {
+        confirmConfig = {
+            url: config.url,
+            method: config.method ?? 'POST',
+            rowSelector: config.rowSelector ?? null,
+            message: config.message ?? 'هل أنت متأكد؟',
+            toastMessage: config.toastMessage ?? 'تم تنفيذ العملية بنجاح.',
+            btnClass: config.btnClass ?? 'btn-danger',
+            btnText: config.btnText ?? 'نعم، تنفيذ'
+        };
+
+        document.getElementById('confirmMessage').innerText = confirmConfig.message;
+
+        const btn = document.getElementById('confirmBtn');
+        btn.className = 'btn me-2 ' + confirmConfig.btnClass;
+        btn.innerText = confirmConfig.btnText;
+        btn.onclick = confirmAction;
+
+        document.getElementById('toastMessage').innerText = confirmConfig.toastMessage;
+
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('confirmDialog').style.display = 'block';
+    }
+
+    function closeDialog() {
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('confirmDialog').style.display = 'none';
+    }
+
+    function confirmAction() {
+        fetch(confirmConfig.url, {
+            method: confirmConfig.method,
+            headers: {
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                if (confirmConfig.rowSelector) {
+                    const el = document.querySelector(confirmConfig.rowSelector);
+                    if (el) el.remove();
+                }
+
+                const toast = new bootstrap.Toast(document.getElementById('confirmToast'));
+                toast.show();
+            } else {
+                console.error("فشل العملية");
+            }
+            closeDialog();
+        })
+        .catch(error => {
+            console.error("خطأ:", error);
+            closeDialog();
+        });
+    }
+</script>

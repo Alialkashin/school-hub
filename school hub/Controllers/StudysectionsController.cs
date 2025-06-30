@@ -75,7 +75,7 @@ namespace school_hub.Areas.Public.Controllers
                 {
                     StudentId = studentId,
                     PlanId = planId,
-                    PaymentStatus = enPaymentStatus.Progress
+                    PaymentStatus = enPaymentStatus.notComplete
                 };
                 _context.StudentSubscriptions.Add(subscription);
                 await _context.SaveChangesAsync();

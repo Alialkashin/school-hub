@@ -18,10 +18,12 @@ namespace school_hub.Areas.Adminstration.Controllers
     public class UsersController : Controller
     {
         private readonly AppDBContext _context;
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
         private readonly UserManager<User> _userManager;
 
-        public UsersController(AppDBContext context, UserManager<User> userManager)
+        public UsersController(AppDBContext context, UserManager<User> userManager,RoleManager<IdentityRole<int>> roleManager)
         {
+            _roleManager = roleManager;
             _context = context;
             _userManager = userManager;
         }
@@ -70,7 +72,7 @@ namespace school_hub.Areas.Adminstration.Controllers
             switch (model.UserType)
             {
                 case enUserType.Student:
-                    newUser = new Student();
+                    newUser = new school_hub.Models.Student();
                     break;
                 case enUserType.Teacher:
                     newUser = new Teacher();
@@ -85,10 +87,23 @@ namespace school_hub.Areas.Adminstration.Controllers
             newUser.UserName = model.Email;
             newUser.IsActive = model.IsActive;
             newUser.UserType = model.UserType;
-
+            newUser.IsFirstLogin = true;
             var result = await _userManager.CreateAsync(newUser, model.Password);
             if (result.Succeeded)
             {
+                switch (model.UserType)
+                {
+                    case enUserType.Student:
+                        await _userManager.AddToRoleAsync(newUser, enUserType.Student.ToString());
+                        break;
+                    case enUserType.Teacher:
+                        await _userManager.AddToRoleAsync(newUser, enUserType.Teacher.ToString());
+                        break;
+                    case enUserType.Admin:
+                        await _userManager.AddToRoleAsync(newUser, enUserType.Admin.ToString());
+                        break;
+                }
+                
                 return RedirectToAction(nameof(Index));
             }
 

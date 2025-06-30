@@ -1,163 +1,44 @@
-﻿@model IEnumerable<school_hub.Models.Subject>
+﻿@model IEnumerable<Subject>
 
 @{
     ViewData["Title"] = "المواد";
-  
 }
 
-<form id="antiForgeryForm" asp-controller="Subjects" asp-action="Index" method="post" style="display:none;">
-    @Html.AntiForgeryToken()
-</form>
+<h1>المواد</h1>
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="text-primary"><i class="bi bi-book-half"></i>@ViewData["Title"]</h2>
-        <a class="btn btn-success " asp-action="Create"><i class="bi bi-plus-circle"></i>اضافة الموادة جديدة </a>
-    </div>
-</div>
-<div id="alertArea"></div>
-<div class="table-responsive shadow-sm rounded">
-    <table class="table table-striped table-hover align-middle text-center" border="1">
+<p>
+    <a asp-action="Create" class="btn btn-primary">إضافة مادة جديدة</a>
+</p>
+
+<table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalDuration)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Teacher)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StudyPlan)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
-            </th>
-            <th></th>
+            <th>المدة الكلية</th>
+            <th>المعلم</th>
+            <th>الخطة الدراسية</th>
+            <th>اسم المادة</th>
+            <th>الوصف</th>
+            <th>الصورة</th>
+            <th>الخيارات</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model)
+{
         <tr>
+            <td>@item.TotalDuration</td>
+            <td>@item.Teacher?.UserName</td>
+            <td>@item.StudyPlan?.Name</td>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
             <td>
-                @Html.DisplayFor(modelItem => item.TotalDuration)
+                <img src="@item.ImagePath" alt="صورة المادة" class="thumbnail" style="width:120px; height:100px;" />
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Teacher.UserName)
+                <a asp-action="Edit" asp-route-id="@item.SubjectId" class="btn btn-sm btn-warning">تعديل</a>
+                <a asp-action="Delete" asp-route-id="@item.SubjectId" class="btn btn-sm btn-danger">حذف</a>
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StudyPlan.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                    <img src="@Html.DisplayFor(modelItem => item.ImagePath)" class="tumbnail" style="width:120px; height:100px" />
-            </td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-outline-success"
-                                style="height:50px; width:50px;" title="تعديل"
-                                onclick="window.location.href='@Url.Action("Edit", "Subjects", new { id = item.SubjectId })'">
-                            <i class="bi bi-pencil-square"></i>
-                        </button>
-
-                        <button type="button" class="btn btn-sm btn-outline-dark"
-                                style="height:50px; width:50px;" title="تفاصيل"
-                                onclick="window.location.href='@Url.Action("Details", "Subjects", new { id = item.SubjectId })'">
-                            <i class="bi bi-eye"></i>
-                        </button>
-
-                        <button type="button" class="btn btn-sm btn-outline-danger btn-delete"
-                                style="height:50px; width:50px;" title="حذف"
-                                data-subjectid="@item.StudyPlanId" data-subjecttitle="@item.Name">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">تأكيد حذف القسم</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
-            </div>
-            <div class="modal-body">
-                هل أنت متأكد من حذف القسم <strong id="subjecttitle"></strong>؟
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">حذف</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-@section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-
-        function showAlert(message, type = 'success') {
-            var alertHtml = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                                ${message}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                             </div>`;
-            $('#alertArea').html(alertHtml);
-            setTimeout(() => {
-                $('#alertArea .alert').alert('close');
-            }, 3000);
-        }
-
-        $(function () {
-            var currentBookId = 0;
-            var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-
-            $('.btn-delete').click(function () {
-                currentBookId = $(this).data('subjectid');
-                var title = $(this).data('subjecttitle');
-                $('#subjecttitle').text(title);
-                deleteModal.show();
-            });
-
-            $('#confirmDeleteBtn').click(function () {
-                $.ajax({
-
-                    url: '@Url.Action("DeleteConfirmed", "Subjects", new { area = "Adminstration" })',
-                    type: 'POST',
-                    data: {
-                        id: currentBookId,
-                        __RequestVerificationToken: $('#antiForgeryForm input[name="__RequestVerificationToken"]').val()
-                    },
-                    success: function (result) {
-                        if (result === 'done') {
-                            $('button[data-subjectid="' + currentBookId + '"]').closest('tr').remove();
-                            deleteModal.hide();
-                            showAlert('تم حذف القسم بنجاح', 'success');
-                        } else {
-                            deleteModal.hide();
-                            showAlert('حدث خطأ أثناء الحذف', 'danger');
-                        }
-                    },
-                    error: function () {
-                        deleteModal.hide();
-                        showAlert('فشل الاتصال بالخادم', 'danger');
-                    }
-                });
-            });
-        });
-    </script>
+        </tr>
 }
+    </tbody>
+</table>

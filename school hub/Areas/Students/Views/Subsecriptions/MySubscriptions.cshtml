@@ -1,0 +1,30 @@
+@model List<StudySectionWithPlansViewModel>
+
+<div class="container mt-4">
+    @foreach (var Section in Model)
+    {
+        <div class="mb-5">
+            <!-- عنوان القسم -->
+            <h3 class="mb-4">@Section.StudySectionName</h3>
+            
+            <div class="row">
+                @foreach (var plan in Section.StudyPlans)
+                {
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">@plan.StudyPlanName</h5>
+                                <p class="card-text">
+                                    الحالة: @plan.paymentStatus
+                                </p>
+                            </div>
+                            
+                        </div>
+                        <span class="badge bg-warning">@plan.paymentStatus</span>
+                    </div>
+
+                }
+            </div>
+        </div>
+    }
+</div>

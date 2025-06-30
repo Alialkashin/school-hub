@@ -1,0 +1,64 @@
+<style>
+    #confirmDialogLogOut {
+        display: none;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgb(190,190,190);
+        border: 2px dashed #333;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+    #overlayLogOut {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+</style>
+
+
+<div id="overlayLogOut"></div>
+<div id="confirmDialogLogOut">
+    <p>هل انت متأكد من  انك تريد تسجيل الخروج😢</p>
+    <button class="btn btn-danger" onclick="confirmLogOut()">مغادرة المنصة</button>
+    <button class="btn btn-secondary" onclick="closeDialogLogOut()">إلغاء</button>
+</div>
+
+<script>
+
+    function showLogOutDialog() {
+        document.getElementById('overlayLogOut').style.display = 'block';
+        document.getElementById('confirmDialogLogOut').style.display = 'block';
+    }
+
+    function closeDialogLogOut() {
+        document.getElementById('overlayLogOut').style.display = 'none';
+        document.getElementById('confirmDialogLogOut').style.display = 'none';
+    }
+
+    function confirmLogOut() {
+        fetch(`/Account/LogOut`, {
+            method: 'POST',
+            headers: {
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? ''
+            }
+        })
+        .then(Response => {
+            if(Response.ok){
+            closeDialogLogOut();
+            window.location.href = "/Home/Index";
+            }
+        })
+        .catch(error => {
+            console.error("خطأ في الاتصال:", error);
+            closeDialog();
+        });
+    }
+</script>

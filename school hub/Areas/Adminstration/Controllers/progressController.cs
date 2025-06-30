@@ -60,7 +60,7 @@ namespace school_hub.Areas.Adminstration.Controllers
 
             if (request != null)
             {
-                request.PaymentStatus = enPaymentStatus.Progress; // أو حالة مخصصة للرفض
+                request.PaymentStatus = enPaymentStatus.notComplete; // أو حالة مخصصة للرفض
                 await _context.SaveChangesAsync();
             }
 

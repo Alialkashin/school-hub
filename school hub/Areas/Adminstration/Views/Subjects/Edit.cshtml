@@ -1,121 +1,69 @@
-﻿@model school_hub.Areas.Adminstration.ViewModels.InputSubjectViewModel
-
+@model InputSubjectViewModel
 @{
     ViewData["Title"] = "تعديل المادة";
 }
 
 <h1 class="mb-4">@ViewData["Title"]</h1>
 
-<form asp-action="Edit" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
-    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-  
-    <input type="hidden" asp-for="ExistingImagePath" />
-
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label fw-bold"></label>
-        <input asp-for="Name" class="form-control" placeholder="أدخل اسم المادة" required />
-        <div class="invalid-feedback">
-            الرجاء إدخال اسم المادة.
-        </div>
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label fw-bold"></label>
-        <textarea asp-for="Description" class="form-control" rows="4" placeholder="وصف المادة"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="TotalDuration" class="form-label fw-bold"></label>
-        <input asp-for="TotalDuration" type="number" min="0" class="form-control" placeholder="مدة المادة بالدقائق" required />
-        <div class="invalid-feedback">
-            الرجاء إدخال مدة المادة بشكل صحيح.
-        </div>
-        <span asp-validation-for="TotalDuration" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="StudyPlanId" class="form-label fw-bold"></label>
-        <select asp-for="StudyPlanId" class="form-select" asp-items="Model.StudyPlans" required>
-            <option value="">اختر خطة دراسية</option>
-        </select>
-        <div class="invalid-feedback">
-            الرجاء اختيار خطة دراسية.
-        </div>
-        <span asp-validation-for="StudyPlanId" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="TeacherId" class="form-label fw-bold"></label>
-        <select asp-for="TeacherId" class="form-select" asp-items="Model.Teacher" required>
-            <option value="">اختر المدرس</option>
-        </select>
-        <div class="invalid-feedback">
-            الرجاء اختيار مدرس.
-        </div>
-        <span asp-validation-for="TeacherId" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label fw-bold">الصورة الحالية</label><br />
-        @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
-        {
-            <img id="currentImage" src="@Model.ExistingImagePath" alt="الصورة الحالية" class="img-thumbnail" style="max-width: 250px;" />
-        }
-        else
-        {
-            <div class="text-muted">لا توجد صورة حالياً</div>
-        }
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="File" class="form-label fw-bold">رفع صورة جديدة</label>
-        <input asp-for="File" type="file" class="form-control" accept="image/*" onchange="previewImage(event)" />
-        <span asp-validation-for="File" class="text-danger"></span>
-        <div class="mt-3">
-            <img id="imagePreview" src="#" alt="معاينة الصورة" class="img-thumbnail" style="display:none; max-width: 250px;" />
-        </div>
-    </div>
-
-    <button type="submit" class="btn btn-primary me-2">حفظ</button>
-    <a asp-action="Index" class="btn btn-secondary">عودة</a>
-</form>
-
-@section Scripts {
-    <script>
-        // Bootstrap validation
-        (function () {
-            'use strict'
-            var forms = document.querySelectorAll('.needs-validation')
-            Array.prototype.slice.call(forms).forEach(function (form) {
-                form.addEventListener('submit', function (event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
-                    }
-                    form.classList.add('was-validated')
-                }, false)
-            })
-        })();
-
-        // معاينة الصورة قبل الرفع
-        function previewImage(event) {
-            var input = event.target;
-            var preview = document.getElementById('imagePreview');
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    preview.setAttribute('src', e.target.result);
-                    preview.style.display = 'block';
-                }
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                preview.style.display = 'none';
+<h4>Subject</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="SubjectId" />
+            <div class="form-group">
+                <label asp-for="TotalDuration" class="control-label"></label>
+                <input asp-for="TotalDuration" class="form-control" />
+                <span asp-validation-for="TotalDuration" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TeacherId" class="control-label"></label>
+                <select asp-for="TeacherId" class="form-control" asp-items="@Model.Teachers"></select>
+                <span asp-validation-for="TeacherId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudyPlanId" class="control-label"></label>
+                <select asp-for="StudyPlanId" class="form-control" asp-items="@Model.StudyPlans"></select>
+                <span asp-validation-for="StudyPlanId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
+            {
+                <div class="form-group" style="margin-bottom:20px">
+                    <label>الصورة الحالية</label><br />
+                    <img src="@Model.ExistingImagePath" class="img-thumbnail" style="width:220px; height:200px" />
+                </div>
             }
+            <div class="form-group " style="margin-bottom:20px">
+                <button type="button" class="btn btn-warning" onclick="showFileInput()">تغيير الصورة</button>
+            </div>
+            <div class="form-group " id="fileInputDiv" style="display:none; margin-bottom:20px">
+                <label asp-for="File" class="control-label">اختر صورة جديدة</label>
+                <input asp-for="File" class="form-control" type="file" />
+                <span asp-validation-for="File" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+@section Scripts {
+
+    <script>
+        function showFileInput() {
+            document.getElementById('fileInputDiv').style.display = 'block';
         }
     </script>
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
