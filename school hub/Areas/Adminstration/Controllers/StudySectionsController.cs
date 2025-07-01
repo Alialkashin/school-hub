@@ -66,7 +66,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 StudySection studySection = new StudySection();
                 if (vmstudySection.File != null && vmstudySection.File.Length > 0)
                 {
-                    var uploadsFolder = Path.Combine(_hostingEnvironmentstudysection.WebRootPath, "images/studySections/");
+                    var uploadsFolder = Path.Combine(_hostingEnvironmentstudysection.WebRootPath, "images/StudySectionsS/");
                     var uniqueFileName = Guid.NewGuid().ToString() + "_" + vmstudySection.File.FileName;
                     var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
@@ -76,7 +76,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                         await vmstudySection.File.CopyToAsync(fileStream);
                     }
 
-                    studySection.ImagePath = "/images/studySections/" + uniqueFileName;
+                    studySection.ImagePath = "/images/StudySectionsS/" + uniqueFileName;
                 }
                 studySection.Name = vmstudySection.Name;
                 studySection.Description = vmstudySection.Description;
@@ -101,12 +101,22 @@ namespace school_hub.Areas.Adminstration.Controllers
                 return NotFound();
             }
 
-            var studySection = await _context.Sections.FindAsync(id);
-            if (studySection == null)
+
+            var studysection = await _context.Sections.FindAsync(id);
+            if (studysection == null)
             {
                 return NotFound();
             }
-            return View(studySection);
+
+            var viewModel = new InputstudySectionViewModel
+            {
+                SectionId = studysection.SectionId,
+                Name = studysection.Name,
+                Description = studysection.Description,
+                ExistingImagePath = studysection.ImagePath
+            };
+
+            return View(viewModel);
         }
 
         // POST: Adminstration/StudySections/Edit/5
@@ -114,34 +124,69 @@ namespace school_hub.Areas.Adminstration.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SectionId,SectionType,Name,Description,ImagePath")] StudySection studySection)
+        public async Task<IActionResult> Edit(InputstudySectionViewModel model )
         {
-            if (id != studySection.SectionId)
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var studysection = await _context.Sections.OfType<StudySection>()
+                    .FirstOrDefaultAsync(s => s.SectionId == model.SectionId);
+            if (studysection == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (model.File != null && model.File.Length > 0)
                 {
-                    _context.Update(studySection);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StudySectionExists(studySection.SectionId))
+                    var uploadsFolder = Path.Combine(_hostingEnvironmentstudysection.WebRootPath, "images/StudySectionsS/");
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.File.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    Directory.CreateDirectory(uploadsFolder);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
-                        return NotFound();
+                        await model.File.CopyToAsync(fileStream);
                     }
-                    else
+
+                    if (!string.IsNullOrEmpty(studysection.ImagePath))
                     {
-                        throw;
+                        var oldImagePath = Path.Combine(_hostingEnvironmentstudysection.WebRootPath, studysection.ImagePath.TrimStart('/'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
                     }
+
+                    studysection.ImagePath = "/images/StudySectionsS/" + uniqueFileName;
                 }
-                return RedirectToAction(nameof(Index));
+
+
+                studysection.Name = model.Name;
+                studysection.Description = model.Description;
+              
+
+
+
+                _context.Update(studysection);
+                await _context.SaveChangesAsync();
             }
-            return View(studySection);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!StudySectionExists(studysection.SectionId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Adminstration/StudySections/Delete/5

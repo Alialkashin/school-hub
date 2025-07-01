@@ -18,15 +18,23 @@ namespace school_hub.Controllers
             List<LibrarySection> librarySections = _context.Sections.OfType<LibrarySection>().ToList();
             return View(librarySections);
         }
-        public IActionResult GetSectionBooks(int sectionId)
+        public async Task<IActionResult> GetSectionBooks(int id)
         {
-            LibrarySection? librarySection = _context.Sections.OfType<LibrarySection>().Include(ls => ls.Books).FirstOrDefault();
-            if (librarySection == null)
-            {
+            var section = await _context.Sections
+                .OfType<LibrarySection>()
+                .Include(s => s.Books)
+                .FirstOrDefaultAsync(s => s.SectionId == id);
+
+            if (section == null)
                 return NotFound();
-            }
-            return View(librarySection);
+
+            // ÊÃßÏ Ãä ÇáßÊÈ ÝÚáÇð ÊÊÈÚ ááÞÓã ÇáãÍÏÏ
+            section.Books = section.Books.Where(b => b.LibrarySectionId == id).ToList();
+
+            return View(section);
         }
+
+
         public IActionResult ShowBook(int bookId)
         {
             Book? book = _context.Books.FirstOrDefault(b => b.BookId == bookId);

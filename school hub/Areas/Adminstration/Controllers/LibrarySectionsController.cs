@@ -182,6 +182,8 @@ namespace school_hub.Areas.Adminstration.Controllers
 
                 library.Name = model.Name;
                 library.Description = model.Description;
+              
+
                
 
                 _context.Update(library);
@@ -243,6 +245,8 @@ namespace school_hub.Areas.Adminstration.Controllers
 
             return Content("fail");
         }
+
+      
 
         private bool LibrarySectionExists(int id)
         {

@@ -13,8 +13,8 @@
         <form asp-action="Edit" enctype="multipart/form-data" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-
-            c
+            <input type="hidden" asp-for="SectionId" />
+            <input type="hidden" asp-for="ExistingImagePath" />
 
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>

@@ -20,7 +20,7 @@ namespace school_hub.Data
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
-			#region composit keys
+			#region composit keys // مفتاح مركب
 			modelBuilder.Entity<StudentRating>().HasKey(e => new { e.StudentId, e.LessonId });   //set composit primary key to StudentRating
 			modelBuilder.Entity<StudentStudyPlan>().HasKey(e => new {e.StudentId,e.PlanId});     //set composit primary key to StudentSubscription
 			modelBuilder.Entity<StudentView>().HasKey(e => new { e.StudentId, e.VideoId });       //set composit primary key to StudentViews

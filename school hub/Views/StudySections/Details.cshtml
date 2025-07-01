@@ -1,28 +1,50 @@
-﻿           
-@model StudySection
+﻿
+@model StudySectionDetailsViewModel
 
 @{
     ViewData["Title"] = "تفاصيل القسم";
 }
 
-<h2 class="mb-4">@Model.Name</h2>
+
 
 @* <img src="@Model.ImagePath" class="img-fluid rounded mb-4" alt="صورة القسم" style="max-height: 300px;" /> *@
 
-<@* h4>الخطط الدراسية:</h4> *@
+@* h4>الخطط الدراسية:</h4> *@
+
+<h2 class="mb-4">@Model.Section.Name</h2>
 
 <div class="row">
-    @foreach (var plan in Model.StudyPlans)
+    @foreach (var plan in Model.Section.StudyPlans)
     {
         <div class="col-md-4 mb-3">
             <div class="card h-100 shadow-sm">
+                <img src="@plan.ImagePath" class="card-img-top" alt="صورة الخطة" />
                 <div class="card-body">
                     <h5 class="card-title">@plan.Name</h5>
                     <p class="card-text">@plan.Description</p>
-                         <img src="@plan.ImagePath" class="card-img-top"  />
-                    <a asp-action="Details" asp-controller="StudyPlans" asp-route-id="@plan.StudySectionId" class="btn btn-primary">عرض التفاصيل</a>
-                   
 
+                    <a asp-action="Details" asp-controller="StudyPlans" asp-route-id="@plan.StudyPlanId"
+                       class="btn btn-primary mb-2">عرض التفاصيل</a>
+
+                    @if (Model.StudentId != null)
+                    {
+                        if (Model.SubscribedPlanIds.Contains(plan.StudyPlanId))
+                        {
+                            <span class="text-success">تم شراء الكورس مسبقًا</span>
+                        }
+                        else
+                        {
+                            <a class="btn btn-info"
+                               asp-area="Public"
+                               asp-controller="StudySections"
+                               asp-action="Buy"
+                               asp-route-planId="@plan.StudyPlanId">
+                                شراء الخطة
+                            </a>
+
+
+                        }
+                    }
                 </div>
             </div>
         </div>
