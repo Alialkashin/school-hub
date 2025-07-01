@@ -7,7 +7,7 @@
 <div class="container mt-5">
     <h1 class="text-center mb-4">الدروس الخاصة بالوحدة</h1>
 
-    <a href="/Teacher/Lessons/Create?unitId=@ViewBag.UnitId" class="btn btn-success mb-3">إضافة درس جديد</a>
+<a asp-action="Create" asp-route-unitId="@ViewBag.UnitId" class="btn btn-success">إضافة درس جديد</a>
 
     <table class="table table-bordered table-striped">
         <thead>
@@ -15,24 +15,36 @@
                 <th>رقم الدرس</th>
                 
                 <th>العنوان</th>
-                <th>الوصف</th>
                 <th>الإجراءات</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var lesson in Model)
             {
-                <tr>
+                <tr id="row-@lesson.LessonId">
                     <td>@lesson.LessonNo</td>
                     <td>@lesson.Title</td>
-                    <td>@lesson.Description</td>
                     <td>
-                        <a href="/Teacher/Lessons/Edit/@lesson.LessonId" class="btn btn-sm btn-info">تعديل</a>
-                        <a href="/Teacher/Lessons/Details/@lesson.LessonId" class="btn btn-sm btn-primary">تفاصيل</a>
-                        <a href="/Teacher/Lessons/Delete/@lesson.LessonId" class="btn btn-sm btn-danger">حذف</a>
+                        <button class="btn btn-sm btn-danger"
+                                onclick="showConfirmDialog({
+                                    url: '/Teacher/Lessons/DeleteConfirmed/@lesson.LessonId',
+                                    rowSelector: '#row-' + @lesson.LessonId,
+                                    message: 'هل أنت متأكد من حذف هذا الدرس؟',
+                                    toastMessage: 'تم حذف الدرس بنجاح',
+                                    btnClass: 'btn-danger',
+                                    btnText: ' تأكيد الحذف',
+                                    method: 'POST'
+                                })">
+                            حذف
+                        </button>
+                        <a asp-action="Edit" asp-route-id="@lesson.LessonId" class="btn btn-warning">تعديل</a>
+                        <a asp-controller="Videos" asp-action="Manage" asp-route-lessonId="@lesson.LessonId" class="btn btn-secondary">إدارة فيديوهات الدرس </a>
+                        <a asp-action="Manage" asp-controller="Exam" asp-route-lessonId="@lesson.LessonId" class="btn btn-secondary" >ادارة الاختبار</a>
+
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+<partial name="_ConfirmDialogPartial"></partial>

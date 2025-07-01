@@ -5,7 +5,7 @@ using school_hub.Models;
 using Microsoft.EntityFrameworkCore;
 using school_hub.ViewModels;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using school_hub.Areas.Teachers.ViewModels;
+using school_hub.Areas.Teacher.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Identity.UI.V4.Pages.Account.Internal;
 using Microsoft.AspNetCore.Authorization;

@@ -169,6 +169,10 @@ namespace school_hub.Migrations
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("AnswerId");
 
                     b.HasIndex("QuestionId");
@@ -279,10 +283,6 @@ namespace school_hub.Migrations
                         .HasColumnType("smallint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<short>("LessonId"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<short>("ExamId")
                         .HasColumnType("smallint");

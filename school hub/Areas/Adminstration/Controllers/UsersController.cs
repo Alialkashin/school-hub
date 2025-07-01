@@ -75,7 +75,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                     newUser = new school_hub.Models.Student();
                     break;
                 case enUserType.Teacher:
-                    newUser = new Teacher();
+                    newUser = new school_hub.Models.Teacher();
                     break;
                 case enUserType.Admin:
                 default:

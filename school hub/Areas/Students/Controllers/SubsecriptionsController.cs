@@ -71,7 +71,6 @@ namespace school_hub.Areas.Students.Controllers
 
             return View(grouped);
         }
-
         public IActionResult CourseDetails(short id)
         {
             StudyPlan? studyPlan = _context.StudyPlans

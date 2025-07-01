@@ -9,7 +9,6 @@ namespace school_hub.Models
         public short UnitId { get; set; }
         public byte LessonNo { get; set; }
         public string Title { get; set; }
-        public string Description { get; set; }
         public short ExamId { get; set; }
         public short? PreviousLesson { get; set; }
         public Unit Unit { get; set; }
