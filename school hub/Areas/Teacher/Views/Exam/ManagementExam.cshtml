@@ -1,0 +1,233 @@
+@model ManageExamViewModel
+
+@{
+    ViewData["Title"] = "إدارة أسئلة الاختبار";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">إدارة أسئلة الاختبار للدرس رقم @Model.LessonId</h2>
+
+    <div id="QuestionList" class="row row-cols-1 row-cols-md-2 g-3 mb-4"></div>
+<div class="container">
+    <h4>إضافة / تعديل سؤال</h4>
+    <form id="QuestionForm" style="margin: 20px;">
+        <input type="hidden" name="questionId" id="questionId" />
+        <input type="hidden" name="examId" id="examId" value="@Model.ExamId"/>
+        <input type="hidden" name="lessonId" id="lessonId" value="@Model.LessonId" />
+
+        <div class="mb-3">
+            <label class="form-label">نص السؤال</label>
+            <textarea name="text" id="questionText" class="form-control" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">الإجابات</label>
+            <div id="AnswerList" class="mb-3"></div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="addAnswerField()">إضافة إجابة</button>
+        </div>
+
+        <button type="submit" class="btn btn-success">حفظ</button>
+        <button type="reset" class="btn btn-secondary" onclick="resetForm()">إلغاء</button>
+    </form>
+</div>
+</div>
+@section Scripts{
+<script>
+    let lessonId = @Model.LessonId;
+    let examId = @Model.ExamId;
+    let answerCounter = 0;
+
+    // تحميل الأسئلة عند فتح الصفحة
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadQuestions();
+    });
+
+
+    // تحميل الأسئلة
+    async function loadQuestions() {
+        try {
+            const examId = document.getElementById('examId').value;
+            if (!examId) return;
+            
+            const res = await fetch(`/Exam/GetQuestionsByExamId/${examId}`);
+            if (!res.ok) throw new Error('فشل في تحميل الأسئلة');
+            
+            const questions = await res.json();
+            const list = document.getElementById('QuestionList');
+            list.innerHTML = "";
+
+            if (questions.length === 0) {
+                list.innerHTML = '<div class="col-12 text-center text-muted">لا توجد أسئلة متاحة</div>';
+                return;
+            }
+
+            questions.forEach(q => {
+                const card = document.createElement('div');
+                card.className = 'col';
+                card.innerHTML = `
+                    <div class="card h-100" id="row-${q.questionId}">
+                        <div class="card-body">
+                            <h5 class="card-title">السؤال</h5>
+                            <p class="card-text">${q.text}</p>
+                            <h6 class="card-subtitle mb-2 text-muted">الإجابات:</h6>
+                            <ul class="list-group list-group-flush">
+                                ${q.answers.map(a => `
+                                    <li class="list-group-item ${a.isCorrect ? 'bg-success text-white' : ''}">
+                                        ${a.text} ${a.isCorrect ? '(إجابة صحيحة)' : ''}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                            <div class="d-flex justify-content-between mt-3">
+                                <button class="btn btn-warning btn-sm" onclick="editQuestion(${q.questionId})">تعديل</button>
+                                <button class="btn btn-danger btn-sm"
+                                onclick="showConfirmDialog({
+                                    url: '/Teacher/ُExam/DeleteQuestion?questionId=${q.questionId}',
+                                    rowSelector: '#row-' + ${q.questionId},
+                                    message: 'هل أنت متأكد من حذف هذا السؤال؟',
+                                    toastMessage: 'تم حذف السؤال بنجاح .',
+                                    btnClass: 'btn-danger',
+                                    btnText: ' تأكيد الحذف',
+                                    method: 'DELETE'
+                                })">
+                            حذف
+                        </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        } catch (error) {
+            showToast('error', error.message);
+        }
+    }
+
+    // إضافة حقل إجابة جديد
+    function addAnswerField(answer = { text: '', isCorrect: false }) {
+        const answerList = document.getElementById('AnswerList');
+        const answerId = `answer_${answerCounter++}`;
+        
+        const answerDiv = document.createElement('div');
+        answerDiv.className = 'input-group mb-2';
+        answerDiv.innerHTML = `
+            <input type="text" class="form-control" name="answers[${answerId}].text" 
+                   value="${answer.text || ''}" placeholder="نص الإجابة" required>
+            <div class="input-group-text">
+                <input class="form-check-input mt-0" type="radio" name="correctAnswer" 
+                       value="${answerId}" ${answer.isCorrect ? 'checked' : ''}>
+                <label class="ms-2">إجابة صحيحة</label>
+            </div>
+            <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()">
+                حذف
+            </button>
+        `;
+        answerList.appendChild(answerDiv);
+    }
+
+    // تعديل سؤال
+    async function editQuestion(questionId) {
+        try {
+            const res = await fetch(`/Exam/GetQuestionById/${questionId}`);
+            if (!res.ok) throw new Error('فشل في تحميل بيانات السؤال');
+            
+            const question = await res.json();
+            
+            // تعبئة النموذج
+            document.getElementById('questionId').value = question.questionId;
+            document.getElementById('questionText').value = question.text;
+            
+            // مسح الإجابات الحالية
+            document.getElementById('AnswerList').innerHTML = '';
+            
+            // إضافة إجابات السؤال
+            question.answers.forEach(a => {
+                addAnswerField({ text: a.text, isCorrect: a.isCorrect });
+            });
+            
+            // التمرير إلى النموذج
+            document.getElementById('QuestionForm').scrollIntoView();
+        } catch (error) {
+            showToast('error', error.message);
+        }
+    }
+
+    // إعادة تعيين النموذج
+    function resetForm() {
+        document.getElementById('questionId').value = '';
+        document.getElementById('questionText').value = '';
+        document.getElementById('AnswerList').innerHTML = '';
+        answerCounter = 0;
+    }
+
+    // إرسال النموذج
+    document.getElementById('QuestionForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = {
+            questionId: document.getElementById('questionId').value || 0,
+            examId: examId,
+            text: document.getElementById('questionText').value,
+            answers: []
+        };
+
+        // جمع بيانات الإجابات
+        const answerElements = document.querySelectorAll('#AnswerList .input-group');
+        answerElements.forEach(el => {
+            const text = el.querySelector('input[type="text"]').value;
+            const isCorrect = el.querySelector('input[type="radio"]').checked;
+            formData.answers.push({ text, isCorrect });
+        });
+
+        try {
+            const url = formData.questionId ? '/Exam/UpdateQuestion' : '/Exam/AddQuestion';
+            const method = formData.questionId ? 'PUT' : 'POST';
+            
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            
+            if (!res.ok) throw new Error('فشل في حفظ السؤال');
+            
+            showToast('success', formData.questionId ? 'تم تحديث السؤال بنجاح' : 'تم إضافة السؤال بنجاح');
+            resetForm();
+            await loadQuestions();
+        } catch (error) {
+            showToast('error', error.message);
+        }
+    });
+
+    // عرض رسائل التأكيد
+    function showConfirmDialog({ title = 'تأكيد', message, onConfirm }) {
+        if (confirm(`${title}\n${message}`)) {
+            onConfirm();
+        }
+    }
+
+    // عرض رسائل Toast
+    function showToast(type, message) {
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center text-white bg-${type} border-0 position-fixed bottom-0 end-0 m-3`;
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 5000);
+    }
+</script>
+}
+<partial name="_ConfirmDialogPartial"></partial>

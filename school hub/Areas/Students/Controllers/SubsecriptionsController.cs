@@ -11,9 +11,11 @@ namespace school_hub.Areas.Students.Controllers
 {
 
     [Authorize(Roles = nameof(enUserType.Student))]
+    [Area("Students")]
     public class SubsecriptionsController : Controller
     {
         public int StudentId => int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
         private readonly AppDBContext _context;
         public SubsecriptionsController(AppDBContext context)
         {
@@ -25,8 +27,10 @@ namespace school_hub.Areas.Students.Controllers
         {
             var studentsub = _context.StudentSubscriptions
                 .Where(ss => ss.StudentId == StudentId && ss.PaymentStatus != enPaymentStatus.Complete)
+                .Include(ss => ss.StudyPlan)
+                .Include(ss => ss.StudyPlan.StudySection)
                 .ToList();
-
+            
             var sub = studentsub.Select(itme => new SubsecriptionViewModel
             {
                 studyPlanId = itme.PlanId,
@@ -49,7 +53,9 @@ namespace school_hub.Areas.Students.Controllers
         public IActionResult MyCourses()
         {
             var studentsub = _context.StudentSubscriptions
-                .Where(ss => ss.StudentId == StudentId && ss.PaymentStatus != enPaymentStatus.Complete)
+                .Where(ss => ss.StudentId == StudentId && ss.PaymentStatus == enPaymentStatus.Complete)
+                .Include(ss => ss.StudyPlan)
+                .Include(ss => ss.StudyPlan.StudySection)
                 .ToList();
 
             var sub = studentsub.Select(itme => new SubsecriptionViewModel
@@ -71,7 +77,6 @@ namespace school_hub.Areas.Students.Controllers
 
             return View(grouped);
         }
-
         public IActionResult CourseDetails(short id)
         {
             StudyPlan? studyPlan = _context.StudyPlans
@@ -80,7 +85,6 @@ namespace school_hub.Areas.Students.Controllers
 
             if (studyPlan == null)
             {
-
                 return NotFound();
             }
             return View(studyPlan);

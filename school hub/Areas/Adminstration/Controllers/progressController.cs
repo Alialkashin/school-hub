@@ -22,6 +22,8 @@ namespace school_hub.Areas.Adminstration.Controllers
         {
             var data = await _context.StudentSubscriptions
                 .Include(r => r.Student)
+                .Include(r => r.StudyPlan)
+                .Where(r => r.PaymentStatus != enPaymentStatus.Complete)
                 .ToListAsync();
 
             var requests = data
@@ -48,7 +50,7 @@ namespace school_hub.Areas.Adminstration.Controllers
 
             if (request != null)
             {
-                request.PaymentStatus = enPaymentStatus.Paid;
+                request.PaymentStatus = enPaymentStatus.Complete;
                 await _context.SaveChangesAsync();
                 return Ok();
             }

@@ -25,9 +25,4 @@
     <PackageReference Include="PdfLibCore" Version="2.5.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\images\StudyPlans\" />
-    <Folder Include="wwwroot\PDF\" />
-  </ItemGroup>
-
 </Project>

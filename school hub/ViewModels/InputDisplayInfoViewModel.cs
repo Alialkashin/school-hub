@@ -5,11 +5,11 @@ namespace school_hub.ViewModels
 {
     public class InputDisplayInfoViewModel
     {
-        [DisplayName("ÇáÇÓã")]
+        [DisplayName("Ø§Ù„Ø§Ø³Ù…")]
             public string Name { get; set; }
-        [DisplayName("ÇáæÕİ")]
+        [DisplayName("Ø§Ù„ÙˆØµÙ")]
         public string Description { get; set; }
-        [DisplayName("ÇáÕæÑÉ")]
+        [DisplayName("Ø§Ù„ØµÙˆØ±Ø©")]
         public IFormFile? File { get; set; }
     }
 

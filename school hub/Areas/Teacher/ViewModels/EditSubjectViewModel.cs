@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace school_hub.Areas.Teachers.ViewModels
+namespace school_hub.Areas.Teacher.ViewModels
 {
     public class EditSubjectViewModel
     {

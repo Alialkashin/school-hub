@@ -4,10 +4,6 @@ namespace school_hub.ViewModels
 {
     public class ChangePasswordViewModel
 {
-    [Required]
-    [DataType(DataType.Password)]
-    [Display(Name = "كلمة المرور الحالية")]
-    public string CurrentPassword { get; set; }
 
     [Required]
     [DataType(DataType.Password)]

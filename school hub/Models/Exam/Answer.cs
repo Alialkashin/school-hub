@@ -8,6 +8,7 @@ namespace school_hub.Models
         public int AnswerId { get; set; }
         public int QuestionId { get; set; }
         public bool IsCorrect { get; set; }
+        public string Text { get; set; }
         public Question Question { get; set; }
         public ICollection<StudentAnswer> StudentAnswers { get; set; }
     }

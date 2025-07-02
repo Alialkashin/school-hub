@@ -46,7 +46,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                 }).ToList();
 
             inputsubjectViewModel.Teachers = _context.Users
-                .OfType<Teacher>()
+                .OfType<school_hub.Models.Teacher>()
                 .Select(u => new SelectListItem
                 {
                     Value = u.Id.ToString(),
@@ -131,7 +131,7 @@ namespace school_hub.Areas.Adminstration.Controllers
                     Value = s.StudyPlanId.ToString(),
                     Text = s.Name
                 }).ToList(),
-                Teachers = _context.Set<Teacher>().Select(s => new SelectListItem()
+                Teachers = _context.Set<school_hub.Models.Teacher>().Select(s => new SelectListItem()
                 {
                     Value = s.Id.ToString(),
                     Text = s.UserName
@@ -237,7 +237,7 @@ namespace school_hub.Areas.Adminstration.Controllers
         // POST: Adminstration/Subjects/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(short id)
+        public async Task<IActionResult> Deleteconfirmed(short id)
         {
             var subject = await _context.Subjects.FindAsync(id);
             if (subject != null)
@@ -258,7 +258,6 @@ namespace school_hub.Areas.Adminstration.Controllers
 
             return Content("fail");
         }
-
 
     }
 }

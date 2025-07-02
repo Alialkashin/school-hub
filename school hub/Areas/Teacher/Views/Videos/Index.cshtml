@@ -1,0 +1,187 @@
+@model ManageLessonVideos
+
+@{
+    ViewData["Title"] = "إدارة الفيديوهات";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">إدارة الفيديوهات للدرس رقم @Model.LessonId</h2>
+
+    <div id="videoList" class="row row-cols-1 row-cols-md-2 g-3 mb-4"></div>
+
+    <h4>إضافة / تعديل فيديو</h4>
+    <form id="videoForm" enctype="multipart/form-data">
+        <input type="hidden" name="videoId" id="videoId" />
+        <input type="hidden" name="lessonId" value="@Model.LessonId" />
+
+        <div class="mb-3">
+            <label>ملف الفيديو</label>
+            <input type="file" name="videoFile" id="videoFile" accept="video/*" class="form-control" onchange="autoSetDuration(this)" />
+            <small class="text-muted">اختر فيديو جديد أو اتركه فارغًا للتعديل فقط.</small>
+        </div>
+
+        <div class="mb-3">
+            <label>المدة (بالثواني)</label>
+            <input type="number" name="duration" id="duration" class="form-control" required readonly />
+        </div>
+
+        <button type="submit" class="btn btn-success">حفظ</button>
+        <button type="reset" class="btn btn-secondary" onclick="resetForm()">إلغاء</button>
+    </form>
+</div>
+
+<br>
+<a asp-action="index" asp-controller="Lessons" asp-route-unitId="@Model.UnitId" class="btn btn-secondary">الرجوع لقائمة الدروس</a>
+
+@section Scripts{
+<script>
+    const lessonId = @Model.LessonId;
+
+    // تحميل الفيديوهات عند فتح الصفحة
+    document.addEventListener('DOMContentLoaded', loadVideos);
+
+    async function loadVideos() {
+        try {
+            const res = await fetch(`/Videos/GetByLesson/${lessonId}`);
+            if (!res.ok) throw new Error('فشل في تحميل الفيديوهات');
+            
+            const videos = await res.json();
+            const list = document.getElementById('videoList');
+            list.innerHTML = "";
+
+            if (videos.length === 0) {
+                list.innerHTML = '<div class="col-12 text-center text-muted">لا توجد فيديوهات متاحة</div>';
+                return;
+            }
+
+            videos.forEach(v => {
+                const card = document.createElement('div');
+                card.className = 'col';
+                card.innerHTML = `
+                    <div class="card h-100">
+                        <video class="card-img-top" controls src="${v.videoPath}" style="max-height: 200px;"></video>
+                        <div class="card-body">
+                            <p class="card-text"><strong>المدة:</strong> ${v.duration} ثانية</p>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-warning btn-sm" onclick="editVideo(${v.videoId})">تعديل</button>
+                                <button class="btn btn-danger btn-sm" onclick="confirmDelete(${v.videoId})">حذف</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        } catch (error) {
+            showToast('error', error.message);
+        }
+    }
+
+    async function editVideo(id) {
+        try {
+            const res = await fetch(`/Videos/Get/${id}`);
+            if (!res.ok) throw new Error('فشل في تحميل بيانات الفيديو');
+            
+            const v = await res.json();
+            document.getElementById('videoId').value = v.videoId;
+            document.getElementById('duration').value = v.duration;
+        } catch (error) {
+            showToast('error', error.message);
+        }
+    }
+
+    function confirmDelete(id) {
+        showConfirmDialog({
+            url: `/Videos/Delete/${id}`,
+            method: 'DELETE',
+            message: 'هل أنت متأكد أنك تريد حذف هذا الفيديو؟',
+            onSuccess: () => {
+                showToast('success', 'تم حذف الفيديو بنجاح');
+                loadVideos();
+            }
+        });
+    }
+
+    function autoSetDuration(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        const video = document.createElement("video");
+        video.preload = "metadata";
+
+        video.onloadedmetadata = () => {
+            window.URL.revokeObjectURL(video.src);
+            const duration = Math.floor(video.duration);
+            document.getElementById('duration').value = duration;
+        };
+
+        video.src = URL.createObjectURL(file);
+    }
+
+    function resetForm() {
+        document.getElementById('videoId').value = '';
+        document.getElementById('videoFile').value = '';
+    }
+
+    document.getElementById("videoForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        const videoId = document.getElementById('videoId').value;
+        const videoFile = document.getElementById('videoFile').files[0];
+        const duration = document.getElementById('duration').value;
+        
+        if (videoFile) formData.append('videoFile', videoFile);
+        formData.append('duration', duration);
+        formData.append('lessonId', lessonId);
+
+        try {
+            let url, method;
+            if (videoId) {
+                url = `/Videos/Update`;
+                method = 'PUT';
+                formData.append('videoId', videoId);
+            } else {
+                url = `/Videos/Create`;
+                method = 'POST';
+            }
+
+            const res = await fetch(url, { 
+                method, 
+                body: formData 
+            });
+
+            if (!res.ok) throw new Error('فشل في حفظ الفيديو');
+
+            showToast('success', videoId ? 'تم تحديث الفيديو بنجاح' : 'تم إضافة الفيديو بنجاح');
+            resetForm();
+            loadVideos();
+        } catch (error) {
+            showToast('error', error.message);
+        }
+    });
+
+    // دالة لعرض الرسائل
+    function showToast(type, message) {
+        const toast = document.createElement('div');
+        toast.className = `toast align-items-center text-white bg-${type} border-0 position-fixed bottom-0 end-0 m-3`;
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('aria-live', 'assertive');
+        toast.setAttribute('aria-atomic', 'true');
+        
+        toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        new bootstrap.Toast(toast).show();
+        
+        setTimeout(() => {
+            toast.remove();
+        }, 5000);
+    }
+</script>
+}
+<partial name="_ConfirmDialogPartial"></partial>

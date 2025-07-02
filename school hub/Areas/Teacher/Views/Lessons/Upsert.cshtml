@@ -1,0 +1,41 @@
+@model CreateLessonViewModel
+
+@{
+    bool isEdit = Model.LessonId != null;
+    ViewData["Title"] = isEdit ? "تعديل الدرس" : "إضافة درس جديد";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+
+    <form asp-action="Upsert" method="post">
+
+        @if (isEdit)
+        {
+            <input type="hidden" asp-for="LessonId" />
+        }
+
+        <input type="hidden" asp-for="UnitId" />
+
+        @if (Model.LessonNo != null)
+        {
+            <div class="mb-3">
+                <label class="form-label">رقم الدرس</label>
+                <input class="form-control" value="@Model.LessonNo" readonly />
+            </div>
+        }
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">@ViewData["Title"]</button>
+        <a asp-action="Index" asp-route-unitId="@Model.UnitId" class="btn btn-secondary">إلغاء</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

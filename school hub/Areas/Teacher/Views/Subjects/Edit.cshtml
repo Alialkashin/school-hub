@@ -23,7 +23,7 @@
         <label>الصورة الحالية:</label><br />
         @if (!string.IsNullOrEmpty(Model.ExistingImagePath))
         {
-            <img src="~/images/subjects/@Model.ExistingImagePath" width="120" />
+            <img src="@Model.ExistingImagePath" class="img-thumbnail" style="width:220px; height:200px" />
         }
     </div>
 

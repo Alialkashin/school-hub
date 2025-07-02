@@ -16,7 +16,7 @@
             <p class="mb-2"><strong>الخطة:</strong> @item.StudyPlanName</p>
 
             <div id="actions-@item.StudentId-@item.StudyPlanId">
-                @if (item.PaymentStatus == enPaymentStatus.Paid)
+                @if (item.PaymentStatus == enPaymentStatus.Complete)
                 {
                     <span class="badge bg-success">✅ تم تسليم الطلب</span>
                 }

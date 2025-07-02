@@ -81,6 +81,7 @@ namespace school_hub.Controllers
                 {
                      if (user.IsFirstLogin)
                      {
+                        TempData["OldPassword"] = model.Password;
                          return RedirectToAction("ForceChangePassword");
                      }
 
@@ -119,7 +120,7 @@ namespace school_hub.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login");
 
-            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+            var result = await _userManager.ChangePasswordAsync(user, TempData["OldPassword"].ToString(), model.NewPassword);
 
             if (result.Succeeded)
             {

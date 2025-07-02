@@ -1,5 +1,5 @@
 using school_hub.Models;
-namespace school_hub.Areas.Teachers.ViewModels
+namespace school_hub.Areas.Teacher.ViewModels
 {
     public class StudyPlanSubjectsViewModel
     {
