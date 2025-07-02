@@ -23,8 +23,9 @@ namespace school_hub.Models
     }
 public enum enPaymentStatus
 {
-    Paid,
-    notComplete,
-    Complete
+    Paid=1,
+    notComplete=0,
+        Rejected = 2,
+        Complete =3
 }
 }

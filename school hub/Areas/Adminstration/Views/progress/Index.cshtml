@@ -9,25 +9,101 @@
 <div class="container">
     @foreach (var item in Model)
     {
-        <div class="card mb-4 p-3 shadow-sm">
-            <h5 class="mb-3">طلب رقم: @item.RequestNumber</h5>
+        <div class="card mb-3 p-3 shadow-sm" style="max-width: 700px; margin: 0 auto;" id="request-@item.StudentId-@item.StudyPlanId">
+            <h6 class="mb-2 text-muted">طلب رقم: @item.RequestNumber</h6>
 
-            <p><strong>اسم الطالب:</strong> @item.StudentName</p>
-            <p><strong>الخطة المراد شراءها:</strong> @item.StudyPlanName</p>
+            <p class="mb-1"><strong>الطالب:</strong> @item.StudentName</p>
+            <p class="mb-2"><strong>الخطة:</strong> @item.StudyPlanName</p>
 
-            <div>
-                <form asp-action="Approve" asp-controller="progress" method="post"
-                      asp-route-StudentId="@item.StudentId" asp-route-PlanId="@item.StudyPlanId"
-                      style="display:inline;">
-                    <button type="submit" class="btn btn-success btn-sm">تسليم الطلب</button>
-                </form>
+            <div id="actions-@item.StudentId-@item.StudyPlanId">
+                @if (item.PaymentStatus == enPaymentStatus.Paid)
+                {
+                    <span class="badge bg-success">✅ تم تسليم الطلب</span>
+                }
+                else if (item.PaymentStatus == enPaymentStatus.notComplete)
+                {
+                    <!-- هذا يعني الطلب جديد أو قيد الانتظار -->
+                    <button class="btn btn-success btn-sm" onclick="approve(@item.StudentId, @item.StudyPlanId)">تسليم الطلب</button>
+                    <button class="btn btn-danger btn-sm ms-2" onclick="reject(@item.StudentId, @item.StudyPlanId)">رفض الطلب</button>
+                }
+                else if (item.PaymentStatus == enPaymentStatus.Rejected)
+                {
+                    <span class="badge bg-danger">❌ مرفوض</span>
+                    <button class="btn btn-outline-danger btn-sm ms-2 mt-1"
+                            onclick="deleteRequest(@item.StudentId, @item.StudyPlanId)">
+                        حذف نهائي
+                    </button>
+                }
 
-                <form asp-action="Reject" asp-controller="progress" method="post"
-                      asp-route-StudentId="@item.StudentId" asp-route-PlanId="@item.StudyPlanId"
-                      style="display:inline;">
-                    <button type="submit" class="btn btn-danger btn-sm">رفض الطلب</button>
-                </form>
             </div>
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        function approve(studentId, planId) {
+            fetch(`/Adminstration/Progress/Approve?StudentId=${studentId}&PlanId=${planId}`, {
+                method: 'POST'
+            }).then(res => {
+                if (res.ok) {
+                    updateRequestUI(studentId, planId, 'Paid');
+                    alert('✅ تم تسليم الطلب بنجاح');
+                } else {
+                    alert('❌ فشل في تسليم الطلب');
+                }
+            }).catch(() => {
+                alert('⚠️ حدث خطأ أثناء الاتصال بالخادم');
+            });
+        }
+
+        function reject(studentId, planId) {
+            fetch(`/Adminstration/Progress/Reject?StudentId=${studentId}&PlanId=${planId}`, {
+                method: 'POST'
+            }).then(res => {
+                if (res.ok) {
+                    updateRequestUI(studentId, planId, 'Rejected');
+                    alert('🚫 تم رفض الطلب بنجاح');
+                } else {
+                    alert('❌ فشل في رفض الطلب');
+                }
+            }).catch(() => {
+                alert('⚠️ حدث خطأ أثناء الاتصال بالخادم');
+            });
+        }
+
+        function deleteRequest(studentId, planId) {
+            if (!confirm('هل أنت متأكد من حذف الطلب نهائياً؟')) return;
+
+            fetch(`/Adminstration/Progress/DeleteRequest?StudentId=${studentId}&PlanId=${planId}`, {
+                method: 'POST'
+            }).then(res => {
+                if (res.ok) {
+                    const card = document.getElementById(`request-${studentId}-${planId}`);
+                    if (card) card.remove();
+                    alert('🗑️ تم حذف الطلب نهائياً');
+                } else {
+                    alert('❌ فشل في حذف الطلب');
+                }
+            }).catch(() => {
+                alert('⚠️ حدث خطأ أثناء الاتصال بالخادم');
+            });
+        }
+
+        function updateRequestUI(studentId, planId, status) {
+            const actionsDiv = document.getElementById(`actions-${studentId}-${planId}`);
+
+            if (!actionsDiv) return;
+
+            if (status === 'Paid') {
+                actionsDiv.innerHTML = `<span class="badge bg-success">✅ تم تسليم الطلب</span>`;
+            } else if (status === 'Rejected') {
+                actionsDiv.innerHTML = `
+                    <span class="badge bg-danger">❌ مرفوض</span>
+                    <button class="btn btn-outline-danger btn-sm ms-2"
+                            onclick="deleteRequest(${studentId}, ${planId})">🗑️ حذف نهائي</button>
+                `;
+            }
+        }
+    </script>
+}

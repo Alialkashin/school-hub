@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using school_hub.Data;
 using school_hub.Models;
-using school_hub.Areas.Student.ViewModels;
+using school_hub.Areas.Students.ViewModels;
 using System.Security.Claims;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;

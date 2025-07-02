@@ -9,11 +9,11 @@ using System.Security.Claims;
 namespace school_hub.Areas.Adminstration.Controllers
 {
     [Area("Adminstration")]
-    public class progressController : Controller
+    public class ProgressController : Controller
     {
         private readonly AppDBContext _context;
 
-        public progressController(AppDBContext context)
+        public ProgressController(AppDBContext context)
         {
             _context = context;
         }
@@ -22,20 +22,23 @@ namespace school_hub.Areas.Adminstration.Controllers
         {
             var data = await _context.StudentSubscriptions
                 .Include(r => r.Student)
-                .Include(r => r.StudyPlan)
                 .ToListAsync();
 
             var requests = data
-                .Select((r, index) => new InputStudyPlanRequestViewModel
-                {
-                    RequestNumber = index + 1,
-                    StudentName = r.Student.UserName,
-                    StudyPlanName = r.StudyPlan.Name
-                }).ToList();
+          .Select((r, index) => new InputStudyPlanRequestViewModel
+          {
+              RequestNumber = index + 1,
+              StudentName = r.Student.UserName,
+              StudyPlanName = r.StudyPlan.Name,
+              StudentId = r.StudentId,
+              StudyPlanId = r.PlanId,
+              PaymentStatus = r.PaymentStatus
+          }).ToList();
+
+
 
             return View(requests);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Approve(int StudentId, short PlanId)
@@ -47,9 +50,10 @@ namespace school_hub.Areas.Adminstration.Controllers
             {
                 request.PaymentStatus = enPaymentStatus.Paid;
                 await _context.SaveChangesAsync();
+                return Ok();
             }
 
-            return RedirectToAction(nameof(Index));
+            return NotFound();
         }
 
         [HttpPost]
@@ -60,11 +64,32 @@ namespace school_hub.Areas.Adminstration.Controllers
 
             if (request != null)
             {
-                request.PaymentStatus = enPaymentStatus.notComplete; // أو حالة مخصصة للرفض
+                request.PaymentStatus = enPaymentStatus.Rejected;  // هنا تغير لـ Rejected
                 await _context.SaveChangesAsync();
+                return Ok();
             }
 
-            return RedirectToAction(nameof(Index));
+            return NotFound();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteRequest(int StudentId, short PlanId)
+        {
+            var request = await _context.StudentSubscriptions
+                .FirstOrDefaultAsync(r => r.StudentId == StudentId && r.PlanId == PlanId);
+
+            if (request != null)
+            {
+                _context.StudentSubscriptions.Remove(request);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+
+            return NotFound();
+        }
+
+
+
+
     }
 }

@@ -1,0 +1,61 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - منصة الطالب</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/fontawesome-free-6.7.2-web/css/all.min.css" />
+    <link href="~/lib/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/student.css" />
+</head>
+<body>
+    <div class="student-container">
+        <nav class="student-sidebar bg-dark text-white">
+            <div class="sidebar-header p-3 border-bottom">
+                <h5>لوحة الطالب</h5>
+            </div>
+            <ul class="nav flex-column p-2">
+                <li class="nav-item">
+                    <a class="nav-link text-white" asp-area="Students" asp-controller="StudentDashboard" asp-action="Index">
+                        <i class="fas fa-home icon-blue"></i> الصفحة الرئيسية
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" asp-area="Students" asp-controller="StudentLessons" asp-action="Details" asp-route-lessonId="1">
+                        <i class="fas fa-play-circle icon-orange"></i> دروسي
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" asp-area="Students" asp-controller="StudentExams" asp-action="Index">
+                        <i class="fas fa-file-alt icon-green"></i> الاختبارات
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-white" asp-area="Students" asp-controller="Progress" asp-action="Index">
+                        <i class="fas fa-chart-line icon-purple"></i> التقدّم
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+
+        <main class="student-main flex-grow-1 p-4">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/student.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

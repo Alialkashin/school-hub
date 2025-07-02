@@ -145,3 +145,7 @@ main {
     text-align: center;
     padding: 10px 0;
 }
+.offcanvas-body {
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+}

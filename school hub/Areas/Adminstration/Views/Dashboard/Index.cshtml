@@ -1,0 +1,64 @@
+﻿@model AdminDashboardViewModel
+@{
+    ViewData["title"] = "الإحصائيات العامة";
+}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">لوحة التحكم - الإحصائيات العامة</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow rounded-4">
+                <h5 class="card-title"><i class="fa-book"></i> عدد الكتب</h5>
+                <p class="card-text fa-book">@Model.TotalBooks</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow rounded-4">
+                <h5 class="card-title"><i class="fa-school"></i>  الأقسام الدراسية </h5>
+                <p class="card-text fs-4">@Model.TotalStudySections</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow rounded-4">
+                <h5 class="card-title"><i class="fa-book-open"></i>   الأقسام المكتبية </h5>
+                <p class="card-text fs-4">@Model.TotalLibrarySections</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow rounded-4">
+                <h5 class="card-title"><i class="fa-list-alt"></i>   الخطط الدراسية</h5>
+                <p class="card-text fs-4">@Model.TotalStudyPlans</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow rounded-4">
+                <h5 class="card-title"><i class="fa-users"></i> طلاب مشتركين </h5>
+                <p class="card-text fs-4">@Model.TotalStudentsInPlans</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-primary shadow rounded-4">
+                <h5 class="card-title"><i class="fa-clipboard-list"></i>  المواد الدراسية </h5>
+                <p class="card-text fs-4">@Model.TotalSubject</p>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+     
+  
+</div>

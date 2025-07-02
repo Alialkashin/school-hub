@@ -20,6 +20,11 @@
             </div>
             <ul class="nav flex-column">
                 <li class="nav-item">
+                    <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
+                        <i class="fas fa-chart-bar icon-blue"></i>    <em> الاحصائيات </em>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" asp-controller="LibrarySections" asp-action="Index">
                         <i class="fas fa-book icon-orange"></i>  <em>الاقسام المكتبية</em>
                     </a>
@@ -66,16 +71,18 @@
 
 
         </nav>
-    <main class="admin-main">
+        <main class="admin-main flex-grow-1 p-4">
             @RenderBody()
-    </main>
+        </main>
 
     </div>
 
     <script src="~/js/admin.js" asp-append-version="true"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 
 </body>
 </html>

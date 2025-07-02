@@ -1,5 +1,5 @@
 using school_hub.Models;
-namespace school_hub.Areas.Student.ViewModels
+namespace school_hub.Areas.Students.ViewModels
 {
     public class SubsecriptionViewModel
     {

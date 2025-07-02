@@ -1,0 +1,90 @@
+﻿@model StudentLessonViewModel
+
+@{
+   
+    ViewData["Title"] = "عرض الدرس";
+}
+
+<div class="row">
+    
+    <div class="col-md-3 border-end">
+        <h5>فيديوهات الدرس</h5>
+        <ul class="list-group">
+            @foreach (var video in Model.Videos)
+            {
+                    <li class="list-group-item @(video.VideoId == Model.CurrentVideo.VideoId ? "active" : "")">
+                        <a class="text-decoration-none" asp-action="Details" asp-route-lessonId="@Model.LessonId" asp-route-videoId="@video.VideoId">
+                            <i class="fas fa-play"></i> فيديو @video.VideoId
+                        </a>
+                    </li>
+            }
+        </ul>
+    </div>
+
+
+    <div class="col-md-9">
+        <div class="mb-4">
+            <h4>@Model.CurrentVideoTitle</h4>
+            <video width="100%" height="400" controls>
+                <source src="@Url.Content(Model.CurrentVideo.VideoPath)" type="video/mp4">
+                المتصفح لا يدعم تشغيل الفيديو.
+            </video>
+        </div>
+
+   
+        <div>
+            <h5>التعليقات</h5>
+
+            <form asp-action="AddComment" method="post">
+                <input type="hidden" name="VideoId" value="@Model.CurrentVideo.VideoId" />
+                <div class="mb-2">
+                    <textarea name="Content" class="form-control" rows="3" placeholder="أضف تعليقًا..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">إرسال</button>
+            </form>
+
+            <hr />
+
+            @foreach (var comment in Model.Comments)
+            {
+                    <div class="mb-3">
+                        <strong>@comment.StudentName:</strong> @comment.Content <br />
+                        <small class="text-muted">@comment.CommentDate.ToShortDateString()</small>
+
+                   
+                    @foreach (var reply in comment.Replies)
+                    {
+                                <div class="ms-4 mt-2 border-start ps-2">
+                                    <strong>@(reply.TeacherName ?? reply.StudentName):</strong> @reply.Content
+                                    <br /><small class="text-muted">@reply.ReplyDate.ToShortDateString()</small>
+                                </div>
+                    }
+
+                      
+                        <form asp-action="AddReply" method="post" class="mt-2 ms-4">
+                            <input type="hidden" name="CommentId" value="@comment.CommentId" />
+                            <textarea name="Content" class="form-control" rows="2" placeholder="رد على التعليق..."></textarea>
+                            <button type="submit" class="btn btn-sm btn-secondary mt-1">رد</button>
+                        </form>
+                    </div>
+            }
+        </div>
+
+   
+        <div class="mt-4">
+            <a class="btn btn-success" asp-controller="StudentExams" asp-action="Start" asp-route-examId="@Model.ExamId">ابدأ الاختبار</a>
+
+            <form asp-action="RateLesson" method="post" class="d-inline ms-3">
+                <input type="hidden" name="LessonId" value="@Model.LessonId" />
+                <select name="Rating" class="form-select d-inline w-auto">
+                    <option disabled selected>قيّم الدرس</option>
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                            <option value="@i">@i نجوم</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-outline-primary">إرسال</button>
+            </form>
+        </div>
+    </div>
+</div>

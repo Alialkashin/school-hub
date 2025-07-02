@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using school_hub.Data;
 using school_hub.Models;
 
 namespace school_hub.Areas.Students.Controllers
 {
+    [Authorize(Roles = nameof(enUserType.Student))]
     public class CommentsController : Controller
     {
         private readonly AppDBContext _context;

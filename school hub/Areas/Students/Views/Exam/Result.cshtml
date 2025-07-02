@@ -1,0 +1,28 @@
+﻿@{
+   
+    ViewData["Title"] = "نتيجة الاختبار";
+}
+
+<div class="container text-center mt-5">
+    <h2>نتيجتك في الاختبار</h2>
+    <hr />
+    <p class="fs-4">عدد الإجابات الصحيحة: <strong>@ViewBag.Score</strong> من <strong>@ViewBag.Total</strong></p>
+
+    @if ((bool)ViewBag.IsPassed)
+    {
+        <div class="alert alert-success">
+            <h4>مبروك لقد نجحت في الاختبار </h4>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <h4>للأسف، لم تنجح في هذا الاختبار </h4>
+            <p>يمكنك المراجعة وإعادة المحاولة لاحقًا.</p>
+        </div>
+    }
+
+    <a href="/StudentLessons/Details?lessonId=1" class="btn btn-outline-primary mt-3">
+        العودة إلى الدرس
+    </a>
+</div>
