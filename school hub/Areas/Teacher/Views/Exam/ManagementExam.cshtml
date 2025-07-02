@@ -8,12 +8,12 @@
     <h2 class="mb-4 text-center">إدارة أسئلة الاختبار للدرس رقم @Model.LessonId</h2>
 
     <div id="QuestionList" class="row row-cols-1 row-cols-md-2 g-3 mb-4"></div>
-
+<div class="container">
     <h4>إضافة / تعديل سؤال</h4>
-    <form id="QuestionForm">
+    <form id="QuestionForm" style="margin: 20px;">
         <input type="hidden" name="questionId" id="questionId" />
-        <input type="hidden" name="examId" id="@Model.ExamId" />
-        <input type="hidden" name="lessonId" value="@Model.LessonId" />
+        <input type="hidden" name="examId" id="examId" value="@Model.ExamId"/>
+        <input type="hidden" name="lessonId" id="lessonId" value="@Model.LessonId" />
 
         <div class="mb-3">
             <label class="form-label">نص السؤال</label>
@@ -30,7 +30,7 @@
         <button type="reset" class="btn btn-secondary" onclick="resetForm()">إلغاء</button>
     </form>
 </div>
-
+</div>
 @section Scripts{
 <script>
     let lessonId = @Model.LessonId;
@@ -65,7 +65,7 @@
                 const card = document.createElement('div');
                 card.className = 'col';
                 card.innerHTML = `
-                    <div class="card h-100">
+                    <div class="card h-100" id="row-${q.questionId}">
                         <div class="card-body">
                             <h5 class="card-title">السؤال</h5>
                             <p class="card-text">${q.text}</p>
@@ -79,7 +79,18 @@
                             </ul>
                             <div class="d-flex justify-content-between mt-3">
                                 <button class="btn btn-warning btn-sm" onclick="editQuestion(${q.questionId})">تعديل</button>
-                                <button class="btn btn-danger btn-sm" onclick="confirmDelete(${q.questionId})">حذف</button>
+                                <button class="btn btn-danger btn-sm"
+                                onclick="showConfirmDialog({
+                                    url: '/Teacher/ُExam/DeleteQuestion?questionId=${q.questionId}',
+                                    rowSelector: '#row-' + ${q.questionId},
+                                    message: 'هل أنت متأكد من حذف هذا السؤال؟',
+                                    toastMessage: 'تم حذف السؤال بنجاح .',
+                                    btnClass: 'btn-danger',
+                                    btnText: ' تأكيد الحذف',
+                                    method: 'DELETE'
+                                })">
+                            حذف
+                        </button>
                             </div>
                         </div>
                     </div>
@@ -138,28 +149,6 @@
         } catch (error) {
             showToast('error', error.message);
         }
-    }
-
-    // تأكيد الحذف
-    function confirmDelete(questionId) {
-        showConfirmDialog({
-            title: 'تأكيد الحذف',
-            message: 'هل أنت متأكد أنك تريد حذف هذا السؤال؟',
-            onConfirm: async () => {
-                try {
-                    const res = await fetch(`/Exam/DeleteQuestion/${questionId}`, {
-                        method: 'DELETE'
-                    });
-                    
-                    if (!res.ok) throw new Error('فشل في حذف السؤال');
-                    
-                    showToast('success', 'تم حذف السؤال بنجاح');
-                    await loadQuestions();
-                } catch (error) {
-                    showToast('error', error.message);
-                }
-            }
-        });
     }
 
     // إعادة تعيين النموذج
@@ -241,3 +230,4 @@
     }
 </script>
 }
+<partial name="_ConfirmDialogPartial"></partial>

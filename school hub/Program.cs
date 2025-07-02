@@ -30,7 +30,7 @@ using (var scope = app.Services.CreateScope())
     AppDBContext context = scope.ServiceProvider.GetRequiredService<AppDBContext>();
     RoleManager<IdentityRole<int>> roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
     DbInitializer.Seed(context);
-    await RoleInitializer.SeedRoleAsync(context ,roleManager);
+   // await RoleInitializer.SeedRoleAsync(context ,roleManager);
 }
 
 
